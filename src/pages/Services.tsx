@@ -1,18 +1,14 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import Hero from "@/components/landing/Hero";
 import Services from "@/components/landing/Services";
-import Team from "@/components/landing/Team";
 import CTA from "@/components/landing/CTA";
 
-const Index = () => {
+const ServicesPage = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Header />
-      <main>
-        <Hero />
+      <main className="flex-1 pt-16">
         <Services />
-        <Team />
         <CTA />
       </main>
       <Footer />
@@ -20,4 +16,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default ServicesPage;
