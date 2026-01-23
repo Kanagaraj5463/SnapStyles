@@ -1,23 +1,54 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Mail, Lock } from "lucide-react";
+import { ArrowRight, Mail, Lock, Loader2 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
+  const { signIn, user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const from = location.state?.from?.pathname || "/dashboard";
+
+  useEffect(() => {
+    if (user) {
+      navigate(from, { replace: true });
+    }
+  }, [user, navigate, from]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Auth functionality requires backend
-    alert("Authentication requires Lovable Cloud to be enabled. Please enable it to use this feature.");
+    setLoading(true);
+
+    const { error } = await signIn(formData.email, formData.password);
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Login failed",
+        description: error.message,
+      });
+      setLoading(false);
+      return;
+    }
+
+    toast({
+      title: "Welcome back!",
+      description: "You have successfully logged in.",
+    });
   };
 
   return (
@@ -69,9 +100,22 @@ const Login = () => {
                   />
                 </div>
               </div>
-              <Button type="submit" className="w-full bg-accent hover:bg-accent/90">
-                Sign In
-                <ArrowRight className="ml-2 w-4 h-4" />
+              <Button
+                type="submit"
+                className="w-full bg-accent hover:bg-accent/90"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  <>
+                    Sign In
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </>
+                )}
               </Button>
             </form>
 
