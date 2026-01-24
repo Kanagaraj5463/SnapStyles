@@ -1,10 +1,8 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-type AnimationLibrary = "framer-motion" | "react-transition-group";
-
 interface AnimationContextProps {
-  library: AnimationLibrary;
-  setLibrary: (lib: AnimationLibrary) => void;
+  animationsEnabled: boolean;
+  setAnimationsEnabled: (enabled: boolean) => void;
 }
 
 const AnimationContext = createContext<AnimationContextProps | undefined>(undefined);
@@ -15,24 +13,32 @@ export const useAnimation = () => {
   return ctx;
 };
 
-const STORAGE_KEY = "animation-library";
+const STORAGE_KEY = "animations-enabled";
 
 export const AnimationProvider = ({ children }: { children: ReactNode }) => {
-  const [library, setLibraryState] = useState<AnimationLibrary>(() => {
+  const [animationsEnabled, setAnimationsEnabledState] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
-      return (localStorage.getItem(STORAGE_KEY) as AnimationLibrary) || "framer-motion";
+      // Check for user preference first
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored !== null) {
+        return stored === "true";
+      }
+      // Respect reduced motion preference
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return false;
+      }
     }
-    return "framer-motion";
+    return true;
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, library);
-  }, [library]);
+    localStorage.setItem(STORAGE_KEY, String(animationsEnabled));
+  }, [animationsEnabled]);
 
-  const setLibrary = (lib: AnimationLibrary) => setLibraryState(lib);
+  const setAnimationsEnabled = (enabled: boolean) => setAnimationsEnabledState(enabled);
 
   return (
-    <AnimationContext.Provider value={{ library, setLibrary }}>
+    <AnimationContext.Provider value={{ animationsEnabled, setAnimationsEnabled }}>
       {children}
     </AnimationContext.Provider>
   );

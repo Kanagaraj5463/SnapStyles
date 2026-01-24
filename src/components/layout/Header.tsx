@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, User, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, LogOut, User, Loader2, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -11,11 +11,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { motion } from "framer-motion";
+import { useAnimation } from "@/contexts/AnimationContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { user, profile, loading, signOut } = useAuth();
+  const { animationsEnabled } = useAnimation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleSignOut = async () => {
     await signOut();
@@ -32,34 +44,67 @@ const Header = () => {
       .slice(0, 2);
   };
 
+  const Logo = () => (
+    <Link to="/" className="flex items-center gap-1 group">
+      <motion.div
+        className="relative flex items-center"
+        whileHover={animationsEnabled ? { scale: 1.02 } : undefined}
+        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+      >
+        <span className="font-display text-2xl font-bold">
+          <span className={scrolled ? "text-primary" : "text-white"}>Snap</span>
+          <span className="text-accent relative">
+            Styles
+            {animationsEnabled && (
+              <motion.span
+                className="absolute -top-1 -right-3"
+                animate={{ rotate: [0, 15, -10, 0], scale: [1, 1.2, 0.9, 1] }}
+                transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+              >
+                <Sparkles className="w-4 h-4 text-accent" />
+              </motion.span>
+            )}
+            {!animationsEnabled && (
+              <span className="absolute -top-1 -right-3">
+                <Sparkles className="w-4 h-4 text-accent" />
+              </span>
+            )}
+          </span>
+        </span>
+      </motion.div>
+    </Link>
+  );
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border shadow-lg rounded-b-xl transition-all duration-300" role="banner">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-background/95 backdrop-blur-md border-b border-border shadow-lg"
+          : "bg-transparent border-transparent"
+      }`}
+      role="banner"
+    >
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20 md:h-20 py-2 md:py-0">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-orange-400 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-              <span className="text-white font-bold text-base">SS</span>
-            </div>
-            <span className="font-display text-2xl font-bold text-foreground group-hover:text-accent transition-colors">
-              Snap<span className="text-accent">Styles</span>
-            </span>
-          </Link>
+          <Logo />
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
-            <Link to="/" className="text-base font-semibold px-2 py-1 rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 hover:bg-accent/10 hover:text-accent data-[active=true]:underline data-[active=true]:text-accent" tabIndex={0}>
-              Home
-            </Link>
-            <Link to="/services" className="text-base font-semibold px-2 py-1 rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 hover:bg-accent/10 hover:text-accent data-[active=true]:underline data-[active=true]:text-accent" tabIndex={0}>
-              Services
-            </Link>
-            <Link to="/snap-stream" className="text-base font-semibold px-2 py-1 rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 hover:bg-accent/10 hover:text-accent data-[active=true]:underline data-[active=true]:text-accent" tabIndex={0}>
-              Snap Stream
-            </Link>
-            <Link to="/contact" className="text-base font-semibold px-2 py-1 rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 hover:bg-accent/10 hover:text-accent data-[active=true]:underline data-[active=true]:text-accent" tabIndex={0}>
-              Contact
-            </Link>
+            {["Home", "Services", "Snap Stream", "Contact"].map((item) => {
+              const path = item === "Home" ? "/" : `/${item.toLowerCase().replace(" ", "-")}`;
+              return (
+                <Link
+                  key={item}
+                  to={path}
+                  className={`text-base font-medium px-2 py-1 rounded-lg transition-all duration-200 hover:text-accent ${
+                    scrolled ? "text-foreground" : "text-white/90 hover:text-white"
+                  }`}
+                >
+                  {item}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* CTA Buttons */}
@@ -99,10 +144,19 @@ const Header = () => {
               </DropdownMenu>
             ) : (
               <>
-                <Button variant="ghost" className="rounded-lg px-4 py-2 hover:bg-accent/10 transition-all" asChild>
+                <Button
+                  variant="ghost"
+                  className={`rounded-lg px-4 py-2 transition-all ${
+                    scrolled ? "hover:bg-accent/10" : "text-white hover:bg-white/10"
+                  }`}
+                  asChild
+                >
                   <Link to="/login">Log in</Link>
                 </Button>
-                <Button className="bg-accent hover:bg-orange-500 text-accent-foreground font-semibold rounded-lg px-4 py-2 shadow-md transition-all" asChild>
+                <Button
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold rounded-xl px-5 py-2 shadow-lg hover:shadow-xl transition-all"
+                  asChild
+                >
                   <Link to="/signup">Get Started</Link>
                 </Button>
               </>
@@ -111,10 +165,11 @@ const Header = () => {
 
           {/* Mobile Menu Toggle */}
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-accent/10 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+            className={`md:hidden p-2 rounded-lg transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+              scrolled ? "hover:bg-accent/10" : "text-white hover:bg-white/10"
+            }`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
-            tabIndex={0}
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -122,29 +177,35 @@ const Header = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border rounded-b-xl shadow-lg bg-background/95 animate-fade-in-down">
-            <nav className="flex flex-col gap-4">
-              <Link to="/" className="text-base font-semibold px-2 py-2 rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 hover:bg-accent/10 hover:text-accent" onClick={() => setIsMenuOpen(false)} tabIndex={0}>
-                Home
-              </Link>
-              <Link to="/services" className="text-base font-semibold px-2 py-2 rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 hover:bg-accent/10 hover:text-accent" onClick={() => setIsMenuOpen(false)} tabIndex={0}>
-                Services
-              </Link>
-              <Link to="/snap-stream" className="text-base font-semibold px-2 py-2 rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 hover:bg-accent/10 hover:text-accent" onClick={() => setIsMenuOpen(false)} tabIndex={0}>
-                Snap Stream
-              </Link>
-              <Link to="/contact" className="text-base font-semibold px-2 py-2 rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 hover:bg-accent/10 hover:text-accent" onClick={() => setIsMenuOpen(false)} tabIndex={0}>
-                Contact
-              </Link>
-              <div className="flex flex-col gap-2 pt-4 border-t border-border">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="md:hidden py-4 border-t border-border bg-background/95 backdrop-blur-md"
+          >
+            <nav className="flex flex-col gap-2">
+              {["Home", "Services", "Snap Stream", "Contact"].map((item) => {
+                const path = item === "Home" ? "/" : `/${item.toLowerCase().replace(" ", "-")}`;
+                return (
+                  <Link
+                    key={item}
+                    to={path}
+                    className="text-base font-medium px-4 py-3 rounded-lg hover:bg-accent/10 hover:text-accent transition-all"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item}
+                  </Link>
+                );
+              })}
+              <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-border">
                 {user ? (
                   <>
-                    <Button variant="outline" className="rounded-lg px-4 py-2" asChild>
+                    <Button variant="outline" className="rounded-lg" asChild>
                       <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
                     </Button>
                     <Button
                       variant="outline"
-                      className="text-destructive hover:text-destructive rounded-lg px-4 py-2"
+                      className="text-destructive hover:text-destructive rounded-lg"
                       onClick={handleSignOut}
                     >
                       Sign out
@@ -152,17 +213,17 @@ const Header = () => {
                   </>
                 ) : (
                   <>
-                    <Button variant="outline" className="rounded-lg px-4 py-2" asChild>
+                    <Button variant="outline" className="rounded-lg" asChild>
                       <Link to="/login" onClick={() => setIsMenuOpen(false)}>Log in</Link>
                     </Button>
-                    <Button className="bg-accent hover:bg-orange-500 text-accent-foreground font-semibold rounded-lg px-4 py-2 shadow-md transition-all" asChild>
+                    <Button className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold rounded-lg" asChild>
                       <Link to="/signup" onClick={() => setIsMenuOpen(false)}>Get Started</Link>
                     </Button>
                   </>
                 )}
               </div>
             </nav>
-          </div>
+          </motion.div>
         )}
       </div>
     </header>
