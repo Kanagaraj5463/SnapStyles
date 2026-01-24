@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
-import { Instagram, Send, MapPin, Phone, Mail } from "lucide-react";
-// Removed useAnimation import from Footer, will use AnimationToggle import instead
-
+import { Instagram, Send, MapPin, Phone, Mail, Sparkles } from "lucide-react";
 import { AnimationToggle } from "./AnimationToggle";
+
 const Footer = () => {
   return (
     <footer className="bg-primary text-primary-foreground">
@@ -10,13 +9,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
-                <span className="text-white font-bold text-sm">SS</span>
-              </div>
+            <Link to="/" className="flex items-center gap-1">
               <span className="font-display text-xl font-bold">
                 Snap<span className="text-accent">Styles</span>
               </span>
+              <Sparkles className="w-4 h-4 text-accent" />
             </Link>
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
               Helping content creators grow, monetize, and succeed in the digital economy.
@@ -82,18 +79,18 @@ const Footer = () => {
                 <span>Remote-First Company</span>
               </div>
               <a
-                href="tel:+1234567890"
+                href="tel:+919994305463"
                 className="flex items-center gap-3 text-primary-foreground/70 hover:text-accent transition-colors text-sm"
               >
                 <Phone className="w-4 h-4 shrink-0" />
-                <span>+1 (234) 567-890</span>
+                <span>+91 99943 05463</span>
               </a>
               <a
-                href="mailto:hello@snapstyles.com"
+                href="mailto:kanaguphysics@gmail.com"
                 className="flex items-center gap-3 text-primary-foreground/70 hover:text-accent transition-colors text-sm"
               >
                 <Mail className="w-4 h-4 shrink-0" />
-                <span>hello@snapstyles.com</span>
+                <span>kanaguphysics@gmail.com</span>
               </a>
             </div>
           </div>
@@ -111,7 +108,6 @@ const Footer = () => {
             <Link to="/terms" className="text-primary-foreground/50 hover:text-accent transition-colors text-sm">
               Terms of Service
             </Link>
-            {/* Animation Toggle */}
             <AnimationToggle />
           </div>
         </div>
@@ -119,7 +115,5 @@ const Footer = () => {
     </footer>
   );
 };
-
-
 
 export default Footer;

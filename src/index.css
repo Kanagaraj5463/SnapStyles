@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* SnapStyles Design System - Professional Creator Platform
+/* SnapStyles Design System - Creative & Playful Creator Platform
    All colors MUST be HSL.
 */
 
@@ -48,12 +48,15 @@
     /* Gradient tokens */
     --gradient-hero: linear-gradient(135deg, hsl(222 47% 15%) 0%, hsl(222 47% 25%) 100%);
     --gradient-accent: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(24 95% 63%) 100%);
+    --gradient-playful: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(340 82% 52%) 50%, hsl(280 87% 52%) 100%);
+    --gradient-fun: linear-gradient(45deg, hsl(24 95% 53%), hsl(45 93% 47%));
 
     /* Shadow tokens */
     --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.05);
     --shadow-md: 0 4px 6px -1px hsl(222 47% 11% / 0.1), 0 2px 4px -2px hsl(222 47% 11% / 0.1);
     --shadow-lg: 0 10px 15px -3px hsl(222 47% 11% / 0.1), 0 4px 6px -4px hsl(222 47% 11% / 0.1);
     --shadow-xl: 0 20px 25px -5px hsl(222 47% 11% / 0.1), 0 8px 10px -6px hsl(222 47% 11% / 0.1);
+    --shadow-playful: 0 10px 40px -10px hsl(24 95% 53% / 0.3);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -137,8 +140,20 @@
     background: var(--gradient-accent);
   }
 
+  .gradient-playful {
+    background: var(--gradient-playful);
+  }
+
+  .gradient-fun {
+    background: var(--gradient-fun);
+  }
+
   .shadow-elegant {
     box-shadow: var(--shadow-lg);
+  }
+
+  .shadow-playful {
+    box-shadow: var(--shadow-playful);
   }
 
   /* Fade animation for React Transition Group */

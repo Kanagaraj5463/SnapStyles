@@ -1,26 +1,22 @@
 import React from "react";
 import { useAnimation } from "@/contexts/AnimationContext";
+import { Sparkles } from "lucide-react";
 
 export const AnimationToggle = () => {
-  const { library, setLibrary } = useAnimation();
+  const { animationsEnabled, setAnimationsEnabled } = useAnimation();
+  
   return (
-    <div className="flex items-center gap-2 ml-4">
-      <span className="text-xs text-primary-foreground/60">Animation:</span>
-      <button
-        className={`px-2 py-1 rounded text-xs font-semibold border transition-colors ${library === "framer-motion" ? "bg-accent text-accent-foreground border-accent" : "bg-primary-foreground/10 text-primary-foreground border-transparent"}`}
-        onClick={() => setLibrary("framer-motion")}
-        aria-pressed={library === "framer-motion"}
-      >
-        Framer Motion
-      </button>
-      <button
-        className={`px-2 py-1 rounded text-xs font-semibold border transition-colors ${library === "react-transition-group" ? "bg-accent text-accent-foreground border-accent" : "bg-primary-foreground/10 text-primary-foreground border-transparent"}`}
-        onClick={() => setLibrary("react-transition-group")}
-        aria-pressed={library === "react-transition-group"}
-      >
-        React Transition Group
-      </button>
-      <span className="text-xs text-primary-foreground/80 font-bold ml-2">{library === "framer-motion" ? "Framer Motion Active" : "React Transition Group Active"}</span>
-    </div>
+    <button
+      onClick={() => setAnimationsEnabled(!animationsEnabled)}
+      className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+        animationsEnabled 
+          ? "bg-accent/20 text-accent border-accent/30" 
+          : "bg-primary-foreground/10 text-primary-foreground/60 border-transparent"
+      }`}
+      aria-pressed={animationsEnabled}
+    >
+      <Sparkles className="w-3 h-3" />
+      {animationsEnabled ? "Animations On" : "Animations Off"}
+    </button>
   );
 };

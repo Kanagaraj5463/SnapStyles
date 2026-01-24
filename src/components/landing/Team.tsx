@@ -1,138 +1,99 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { 
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { Instagram, Send, Linkedin } from "lucide-react";
+import { Target, Heart, Lightbulb, Rocket } from "lucide-react";
+import { motion } from "framer-motion";
+import { useAnimation } from "@/contexts/AnimationContext";
+import ScrollReveal from "@/components/animations/ScrollReveal";
 
-const teamMembers = [
+const values = [
   {
-    name: "Alex Rivera",
-    role: "Founder & CEO",
-    type: "Pilot",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
-    bio: "Former creator with 1M+ followers, now leading the mission to empower creators worldwide.",
-    social: { instagram: "#", telegram: "#", linkedin: "#" },
+    icon: Target,
+    title: "Creator-First",
+    description: "Every feature we build starts with one question: how does this help creators succeed? Your growth is our mission.",
+    color: "bg-accent",
   },
   {
-    name: "Jordan Chen",
-    role: "Head of Product",
-    type: "Crew",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face",
-    bio: "Product visionary with 10+ years building tools that creators love.",
-    social: { instagram: "#", telegram: "#", linkedin: "#" },
+    icon: Heart,
+    title: "Community Driven",
+    description: "We're building more than a platform—we're building a community where creators support and inspire each other.",
+    color: "bg-pink-500",
   },
   {
-    name: "Sam Williams",
-    role: "Growth Lead",
-    type: "Crew",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face",
-    bio: "Helped scale multiple creator-focused startups from 0 to millions of users.",
-    social: { instagram: "#", telegram: "#", linkedin: "#" },
+    icon: Lightbulb,
+    title: "Innovation",
+    description: "We stay ahead of trends and continuously evolve our tools to give you the competitive edge you need.",
+    color: "bg-yellow-500",
   },
   {
-    name: "Taylor Martinez",
-    role: "Community Manager",
-    type: "Crew",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
-    bio: "Building bridges between creators and turning our community into a family.",
-    social: { instagram: "#", telegram: "#", linkedin: "#" },
-  },
-  {
-    name: "Casey Thompson",
-    role: "Creator Success",
-    type: "Crew",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
-    bio: "Dedicated to helping every creator achieve their monetization goals.",
-    social: { instagram: "#", telegram: "#", linkedin: "#" },
+    icon: Rocket,
+    title: "Your Success",
+    description: "When you win, we win. We're invested in your journey and committed to helping you reach your goals.",
+    color: "bg-purple-500",
   },
 ];
 
 const Team = () => {
+  const { animationsEnabled } = useAnimation();
+
   return (
     <section className="py-24 bg-secondary/30">
       <div className="container mx-auto px-4">
         {/* Section header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <span className="text-accent font-semibold text-sm uppercase tracking-wider">Our Team</span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mt-3 mb-4">
-            Meet the Pilot & Crew
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            A passionate team of creators and tech experts dedicated to your success.
-          </p>
+        <ScrollReveal>
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <span className="text-accent font-semibold text-sm uppercase tracking-wider">Our Values</span>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mt-3 mb-4">
+              What Drives Us
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              We're passionate about empowering creators to turn their passion into sustainable careers.
+            </p>
+          </div>
+        </ScrollReveal>
+
+        {/* Values grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {values.map((value, index) => (
+            <ScrollReveal key={index} delay={index * 0.1} direction="scale">
+              <motion.div
+                whileHover={animationsEnabled ? { y: -5 } : undefined}
+                className="h-full"
+              >
+                <Card className="border-border/50 text-center h-full hover:shadow-lg transition-all duration-300">
+                  <CardContent className="pt-8 pb-6 px-6">
+                    <motion.div
+                      className={`w-16 h-16 rounded-2xl ${value.color} flex items-center justify-center mx-auto mb-6`}
+                      whileHover={animationsEnabled ? { scale: 1.1, rotate: 10 } : undefined}
+                      transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    >
+                      <value.icon className="w-8 h-8 text-white" />
+                    </motion.div>
+                    <h3 className="font-semibold text-lg text-foreground mb-3">{value.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {value.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </ScrollReveal>
+          ))}
         </div>
 
-        {/* Team carousel */}
-        <div className="max-w-5xl mx-auto">
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-4">
-              {teamMembers.map((member, index) => (
-                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                  <Card className="border-border/50 overflow-hidden group">
-                    <div className="relative">
-                      <img
-                        src={member.image}
-                        alt={member.name}
-                        className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute top-3 right-3">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          member.type === "Pilot" 
-                            ? "bg-accent text-white" 
-                            : "bg-primary text-primary-foreground"
-                        }`}>
-                          {member.type}
-                        </span>
-                      </div>
-                    </div>
-                    <CardContent className="p-6">
-                      <h3 className="font-semibold text-lg text-foreground">{member.name}</h3>
-                      <p className="text-accent text-sm font-medium mb-3">{member.role}</p>
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                        {member.bio}
-                      </p>
-                      <div className="flex gap-2">
-                        <a
-                          href={member.social.instagram}
-                          className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-accent hover:text-white transition-colors"
-                          aria-label={`${member.name}'s Instagram`}
-                        >
-                          <Instagram className="w-4 h-4" />
-                        </a>
-                        <a
-                          href={member.social.telegram}
-                          className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-accent hover:text-white transition-colors"
-                          aria-label={`${member.name}'s Telegram`}
-                        >
-                          <Send className="w-4 h-4" />
-                        </a>
-                        <a
-                          href={member.social.linkedin}
-                          className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-accent hover:text-white transition-colors"
-                          aria-label={`${member.name}'s LinkedIn`}
-                        >
-                          <Linkedin className="w-4 h-4" />
-                        </a>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-12" />
-            <CarouselNext className="hidden md:flex -right-12" />
-          </Carousel>
-        </div>
+        {/* Mission statement */}
+        <ScrollReveal delay={0.4}>
+          <div className="max-w-3xl mx-auto mt-16 text-center">
+            <motion.div
+              className="bg-gradient-to-r from-primary to-primary/80 rounded-3xl p-8 md:p-12 text-white"
+              whileHover={animationsEnabled ? { scale: 1.02 } : undefined}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <h3 className="font-display text-2xl md:text-3xl font-bold mb-4">Our Mission</h3>
+              <p className="text-white/80 text-lg leading-relaxed">
+                To democratize creator success by providing accessible, powerful tools that help 
+                anyone with a passion and a vision build a thriving digital presence and sustainable income.
+              </p>
+            </motion.div>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
