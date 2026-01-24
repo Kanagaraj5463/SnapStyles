@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { Instagram, Send, MapPin, Phone, Mail } from "lucide-react";
+// Removed useAnimation import from Footer, will use AnimationToggle import instead
 
+import { AnimationToggle } from "./AnimationToggle";
 const Footer = () => {
   return (
     <footer className="bg-primary text-primary-foreground">
@@ -102,18 +104,22 @@ const Footer = () => {
           <p className="text-primary-foreground/50 text-sm">
             © {new Date().getFullYear()} SnapStyles. All rights reserved.
           </p>
-          <div className="flex gap-6">
+          <div className="flex gap-6 items-center">
             <Link to="/privacy" className="text-primary-foreground/50 hover:text-accent transition-colors text-sm">
               Privacy Policy
             </Link>
             <Link to="/terms" className="text-primary-foreground/50 hover:text-accent transition-colors text-sm">
               Terms of Service
             </Link>
+            {/* Animation Toggle */}
+            <AnimationToggle />
           </div>
         </div>
       </div>
     </footer>
   );
 };
+
+
 
 export default Footer;

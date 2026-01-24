@@ -39,7 +39,7 @@ const Hero = () => {
               className="bg-accent hover:bg-accent/90 text-white px-8 py-6 text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all"
               asChild
             >
-              <Link to="/signup">
+              <Link to="/signup" tabIndex={0} className="focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
                 Get Started Free
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
@@ -50,7 +50,7 @@ const Hero = () => {
               className="border-white/30 text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl"
               asChild
             >
-              <Link to="/snap-stream">
+              <Link to="/snap-stream" tabIndex={0} className="focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
                 <Play className="mr-2 w-5 h-5" />
                 Watch Demo
               </Link>
