@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowRight, Mail, Lock, Loader2 } from "lucide-react";
@@ -52,12 +58,12 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-secondary/30 to-background">
       <Header />
       <main className="flex-1 flex items-center justify-center py-24 px-4">
-        <Card className="w-full max-w-md shadow-xl">
+        <Card className="w-full max-w-md shadow-xl border-border/50 bg-card/80 backdrop-blur-sm">
           <CardHeader className="text-center pb-2">
-            <div className="w-12 h-12 rounded-xl gradient-accent flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 rounded-xl gradient-accent flex items-center justify-center mx-auto mb-4 shadow-lg">
               <span className="text-white font-bold text-lg">SS</span>
             </div>
             <CardTitle className="font-display text-2xl">Welcome Back</CardTitle>
@@ -100,11 +106,7 @@ const Login = () => {
                   />
                 </div>
               </div>
-              <Button
-                type="submit"
-                className="w-full bg-accent hover:bg-accent/90"
-                disabled={loading}
-              >
+              <Button type="submit" className="w-full bg-accent hover:bg-accent/90" disabled={loading}>
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />

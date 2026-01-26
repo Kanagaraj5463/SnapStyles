@@ -25,8 +25,8 @@ const Header = () => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleSignOut = async () => {
@@ -92,7 +92,8 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
             {["Home", "Services", "Snap Stream", "Contact"].map((item) => {
-              const path = item === "Home" ? "/" : `/${item.toLowerCase().replace(" ", "-")}`;
+              const path =
+                item === "Home" ? "/" : `/${item.toLowerCase().replace(" ", "-")}`;
               return (
                 <Link
                   key={item}
@@ -136,7 +137,10 @@ const Header = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive focus:text-destructive">
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="cursor-pointer text-destructive focus:text-destructive"
+                  >
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign out
                   </DropdownMenuItem>
@@ -185,7 +189,8 @@ const Header = () => {
           >
             <nav className="flex flex-col gap-2">
               {["Home", "Services", "Snap Stream", "Contact"].map((item) => {
-                const path = item === "Home" ? "/" : `/${item.toLowerCase().replace(" ", "-")}`;
+                const path =
+                  item === "Home" ? "/" : `/${item.toLowerCase().replace(" ", "-")}`;
                 return (
                   <Link
                     key={item}
@@ -201,7 +206,9 @@ const Header = () => {
                 {user ? (
                   <>
                     <Button variant="outline" className="rounded-lg" asChild>
-                      <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
+                      <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                        Dashboard
+                      </Link>
                     </Button>
                     <Button
                       variant="outline"
@@ -214,10 +221,17 @@ const Header = () => {
                 ) : (
                   <>
                     <Button variant="outline" className="rounded-lg" asChild>
-                      <Link to="/login" onClick={() => setIsMenuOpen(false)}>Log in</Link>
+                      <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                        Log in
+                      </Link>
                     </Button>
-                    <Button className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold rounded-lg" asChild>
-                      <Link to="/signup" onClick={() => setIsMenuOpen(false)}>Get Started</Link>
+                    <Button
+                      className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold rounded-lg"
+                      asChild
+                    >
+                      <Link to="/signup" onClick={() => setIsMenuOpen(false)}>
+                        Get Started
+                      </Link>
                     </Button>
                   </>
                 )}

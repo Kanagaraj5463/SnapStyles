@@ -23,7 +23,7 @@ const Footer = () => {
                 href="https://t.me/snapstyles"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-accent transition-colors"
+                className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
                 aria-label="Telegram"
               >
                 <Send className="w-5 h-5" />
@@ -32,7 +32,7 @@ const Footer = () => {
                 href="https://instagram.com/snapstyles"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-accent transition-colors"
+                className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
                 aria-label="Instagram"
               >
                 <Instagram className="w-5 h-5" />
@@ -44,16 +44,28 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Quick Links</h3>
             <nav className="flex flex-col gap-3">
-              <Link to="/" className="text-primary-foreground/70 hover:text-accent transition-colors text-sm">
+              <Link
+                to="/"
+                className="text-primary-foreground/70 hover:text-accent transition-colors text-sm"
+              >
                 Home
               </Link>
-              <Link to="/services" className="text-primary-foreground/70 hover:text-accent transition-colors text-sm">
+              <Link
+                to="/services"
+                className="text-primary-foreground/70 hover:text-accent transition-colors text-sm"
+              >
                 Services
               </Link>
-              <Link to="/snap-stream" className="text-primary-foreground/70 hover:text-accent transition-colors text-sm">
+              <Link
+                to="/snap-stream"
+                className="text-primary-foreground/70 hover:text-accent transition-colors text-sm"
+              >
                 Snap Stream
               </Link>
-              <Link to="/contact" className="text-primary-foreground/70 hover:text-accent transition-colors text-sm">
+              <Link
+                to="/contact"
+                className="text-primary-foreground/70 hover:text-accent transition-colors text-sm"
+              >
                 Contact
               </Link>
             </nav>
@@ -102,10 +114,16 @@ const Footer = () => {
             © {new Date().getFullYear()} SnapStyles. All rights reserved.
           </p>
           <div className="flex gap-6 items-center">
-            <Link to="/privacy" className="text-primary-foreground/50 hover:text-accent transition-colors text-sm">
+            <Link
+              to="/privacy"
+              className="text-primary-foreground/50 hover:text-accent transition-colors text-sm"
+            >
               Privacy Policy
             </Link>
-            <Link to="/terms" className="text-primary-foreground/50 hover:text-accent transition-colors text-sm">
+            <Link
+              to="/terms"
+              className="text-primary-foreground/50 hover:text-accent transition-colors text-sm"
+            >
               Terms of Service
             </Link>
             <AnimationToggle />
