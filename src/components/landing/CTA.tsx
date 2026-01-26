@@ -9,7 +9,7 @@ const CTA = () => {
   const { animationsEnabled } = useAnimation();
 
   return (
-    <section className="py-24 bg-background">
+    <section className="py-24 bg-background relative overflow-hidden">
       <div className="container mx-auto px-4">
         <ScrollReveal direction="scale">
           <div className="relative max-w-4xl mx-auto">
@@ -23,23 +23,28 @@ const CTA = () => {
               {animationsEnabled ? (
                 <>
                   <motion.div
-                    className="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl"
+                    className="absolute top-0 right-0 w-64 h-64 bg-accent/30 rounded-full blur-3xl"
                     animate={{ x: [0, 20, 0], y: [0, -20, 0] }}
                     transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
                   />
                   <motion.div
-                    className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full blur-2xl"
+                    className="absolute bottom-0 left-0 w-48 h-48 bg-cyan-400/20 rounded-full blur-2xl"
                     animate={{ x: [0, -15, 0], y: [0, 15, 0] }}
                     transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                  <motion.div
+                    className="absolute top-1/2 left-1/4 w-32 h-32 bg-teal-300/20 rounded-full blur-xl"
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                   />
                 </>
               ) : (
                 <>
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl" />
-                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full blur-2xl" />
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-accent/30 rounded-full blur-3xl" />
+                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-cyan-400/20 rounded-full blur-2xl" />
                 </>
               )}
-              
+
               <div className="relative z-10">
                 <motion.div
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6"
@@ -53,8 +58,8 @@ const CTA = () => {
                   Ready to Transform Your Creator Career?
                 </h2>
                 <p className="text-white/80 text-lg max-w-2xl mx-auto mb-8">
-                  Take the first step towards building a sustainable creator career with 
-                  tools designed to help you grow and monetize your content.
+                  Take the first step towards building a sustainable creator career with tools
+                  designed to help you grow and monetize your content.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -64,7 +69,7 @@ const CTA = () => {
                   >
                     <Button
                       size="lg"
-                      className="bg-accent hover:bg-accent/90 text-white px-8 py-6 text-lg rounded-xl shadow-xl"
+                      className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-6 text-lg rounded-xl shadow-xl shadow-accent/30"
                       asChild
                     >
                       <Link to="/signup">
