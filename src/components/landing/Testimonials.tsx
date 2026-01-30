@@ -14,6 +14,14 @@ const testimonials = [
   },
 ];
 
+const getInitials = (name: string) =>
+  name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
 const Testimonials = () => {
   const { animationsEnabled } = useAnimation();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -27,7 +35,7 @@ const Testimonials = () => {
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [isPaused, animationsEnabled]);
+  }, [isPaused, animationsEnabled, testimonials.length]);
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -88,7 +96,7 @@ const Testimonials = () => {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                           <span className="text-white text-sm font-semibold">
-                            {testimonial.initials}
+                            {getInitials(testimonial.name ?? "")}
                           </span>
                         </div>
                         <div>

@@ -162,12 +162,11 @@ const Hero = () => {
                 >
                   <Button
                     size="lg"
-                    variant="outline"
-                    className="border-white/30 text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl backdrop-blur-sm"
+                    className="bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold px-8 py-6 text-lg rounded-xl shadow-lg hover:from-violet-700 hover:to-pink-600 transition-colors focus:outline-none focus:ring-2 focus:ring-violet-300/60"
                     asChild
                   >
-                    <Link to="/snap-stream">
-                      <Play className="mr-2 w-5 h-5" />
+                    <Link to="/snap-stream" className="flex items-center justify-center">
+                      <Play className="mr-3 w-5 h-5 text-white" />
                       Join the Crew!
                     </Link>
                   </Button>
