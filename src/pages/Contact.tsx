@@ -49,13 +49,13 @@ const Contact = () => {
     {
       icon: Mail,
       label: "Email",
-      value: "kanaguphysics@gmail.com",
-      href: "mailto:kanaguphysics@gmail.com",
+      value: "raju@snapstyles.in",
+      href: "Mail Now",
     },
     {
       icon: MapPin,
       label: "Location",
-      value: "Remote-First Company",
+      value: "Bengaluru",
       href: null,
     },
   ];
@@ -70,7 +70,7 @@ const Contact = () => {
     {
       icon: Instagram,
       label: "Instagram",
-      href: "https://instagram.com/snapstyles",
+      href: "https://instagram.com/snapstyles_official",
       color: "hover:bg-pink-500",
     },
   ];
