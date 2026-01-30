@@ -7,39 +7,10 @@ import { useState, useEffect } from "react";
 
 const testimonials = [
   {
-    name: "Alex Chen",
-    role: "Content Creator",
-    quote: "SnapStyles transformed how I manage my content. The tools are intuitive and the growth has been incredible.",
+    name: "Priya",
+    role: "Creator",
+    quote: "I started as a new user and the team is very supportive and cool. Highly recommended!",
     rating: 5,
-    initials: "AC",
-  },
-  {
-    name: "Sarah Williams",
-    role: "YouTuber",
-    quote: "Finally, a platform that understands what creators actually need. My engagement has doubled since I started using it.",
-    rating: 5,
-    initials: "SW",
-  },
-  {
-    name: "Marcus Johnson",
-    role: "Digital Artist",
-    quote: "The monetization features alone are worth it. I've been able to turn my passion into a sustainable income.",
-    rating: 5,
-    initials: "MJ",
-  },
-  {
-    name: "Priya Patel",
-    role: "Lifestyle Blogger",
-    quote: "The community features helped me connect with other creators. It's not just a tool, it's a support system.",
-    rating: 5,
-    initials: "PP",
-  },
-  {
-    name: "David Kim",
-    role: "Podcast Host",
-    quote: "Scheduling and analytics in one place. This platform saves me hours every week that I can now spend creating.",
-    rating: 5,
-    initials: "DK",
   },
 ];
 

@@ -81,31 +81,6 @@ const Footer = () => {
               <span className="text-primary-foreground/70 text-sm">Creator Support</span>
             </nav>
           </div>
-
-          {/* Contact Info */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-lg">Contact Us</h3>
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3 text-primary-foreground/70 text-sm">
-                <MapPin className="w-4 h-4 shrink-0" />
-                <span>Remote-First Company</span>
-              </div>
-              <a
-                href="tel:+919994305463"
-                className="flex items-center gap-3 text-primary-foreground/70 hover:text-accent transition-colors text-sm"
-              >
-                <Phone className="w-4 h-4 shrink-0" />
-                <span>+91 99943 05463</span>
-              </a>
-              <a
-                href="mailto:kanaguphysics@gmail.com"
-                className="flex items-center gap-3 text-primary-foreground/70 hover:text-accent transition-colors text-sm"
-              >
-                <Mail className="w-4 h-4 shrink-0" />
-                <span>kanaguphysics@gmail.com</span>
-              </a>
-            </div>
-          </div>
         </div>
 
         {/* Bottom Bar */}
