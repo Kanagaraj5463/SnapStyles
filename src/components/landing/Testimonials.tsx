@@ -59,7 +59,7 @@ const Testimonials = () => {
               What Our Creators Say
             </h2>
             <p className="text-muted-foreground text-lg">
-              Join thousands of creators who are already growing with SnapStyles
+              We're just getting started — onboarding creators to our platform.
             </p>
           </div>
         </ScrollReveal>
