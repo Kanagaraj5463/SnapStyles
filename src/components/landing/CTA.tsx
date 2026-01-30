@@ -78,24 +78,23 @@ const CTA = () => {
                       </Link>
                     </Button>
                   </motion.div>
-                  <motion.div
+                    <motion.div
                     whileHover={animationsEnabled ? { scale: 1.05 } : undefined}
                     whileTap={animationsEnabled ? { scale: 0.98 } : undefined}
-                  >
+                    >
                     <Button
                       size="lg"
-                      variant="outline"
-                      className="border-white/30 text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl"
+                      className="bg-violet-100 hover:bg-violet-200 text-violet-900 px-8 py-6 text-lg rounded-xl shadow-md shadow-violet-200/40"
                       asChild
                     >
                       <Link to="/contact">Talk to Us</Link>
                     </Button>
-                  </motion.div>
-                </div>
+                    </motion.div>
+                  </div>
 
-                <p className="text-white/60 text-sm mt-6">
+                {/* <p className="text-white/60 text-sm mt-6">
                   No credit card required • Free forever plan available
-                </p>
+                </p> */}
               </div>
             </motion.div>
           </div>
