@@ -41,12 +41,6 @@ const Contact = () => {
 
   const contactInfo = [
     {
-      icon: Phone,
-      label: "Phone",
-      value: "+91 99943 05463",
-      href: "tel:+919994305463",
-    },
-    {
       icon: Mail,
       label: "Email",
       value: "raju@snapstyles.in",
