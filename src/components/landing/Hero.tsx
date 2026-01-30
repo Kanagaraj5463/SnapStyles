@@ -11,9 +11,9 @@ const Hero = () => {
 
   // Stats with animated counters
   const stats = [
-    { icon: Users, value: 10000, suffix: "+", label: "Creators" },
-    { icon: TrendingUp, value: 50, suffix: "M+", label: "Total Reach" },
-    { icon: Globe, value: 50, suffix: "+", label: "Countries" },
+    { icon: Users, value: 3, suffix: "+", label: "Creators" },
+    { icon: TrendingUp, value: 50, suffix: "k+", label: "Total Reach" },
+    { icon: Globe, value: 3, suffix: "+", label: "City" },
     { icon: Headphones, value: 24, suffix: "/7", label: "Support" },
   ];
 
@@ -151,7 +151,7 @@ const Hero = () => {
                     asChild
                   >
                     <Link to="/signup">
-                      Get Started Free
+                      Get Started 
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </Link>
                   </Button>
@@ -168,7 +168,7 @@ const Hero = () => {
                   >
                     <Link to="/snap-stream">
                       <Play className="mr-2 w-5 h-5" />
-                      Watch Demo
+                      Join the Crew!
                     </Link>
                   </Button>
                 </motion.div>
