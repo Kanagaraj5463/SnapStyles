@@ -14,7 +14,7 @@ const testimonials = [
     role: "Pilot",
     quote:
       "Welcome to our creator platform. It’s not just a platform, but a community that supports you end-to-end. Join us today and stay tuned for more updates.",
-    rating: 5,
+    // rating: 5,
     image: rajuImage,
   },
 ];
