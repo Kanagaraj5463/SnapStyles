@@ -100,9 +100,9 @@ const Testimonials = () => {
                     <CardContent className="pt-6 pb-6 px-6">
                       <Quote className="w-8 h-8 text-accent/30 mb-4" />
 
-                      <div className="flex gap-0.5 mb-4">
+                      {/* <div className="flex gap-0.5 mb-4">
                         {renderStars(testimonial.rating)}
-                      </div>
+                      </div> */}
 
                       <p className="text-foreground/80 text-sm leading-relaxed mb-6">
                         "{testimonial.quote}"
