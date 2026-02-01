@@ -55,7 +55,7 @@ const Header = () => {
           <span className={scrolled ? "text-primary" : "text-white"}>Snap</span>
           <span className="text-accent relative">
             Styles
-            {animationsEnabled && (
+            {animationsEnabled ? (
               <motion.span
                 className="absolute -top-1 -right-3"
                 animate={{ rotate: [0, 15, -10, 0], scale: [1, 1.2, 0.9, 1] }}
@@ -63,8 +63,7 @@ const Header = () => {
               >
                 <Sparkles className="w-4 h-4 text-accent" />
               </motion.span>
-            )}
-            {!animationsEnabled && (
+            ) : (
               <span className="absolute -top-1 -right-3">
                 <Sparkles className="w-4 h-4 text-accent" />
               </span>
@@ -74,6 +73,12 @@ const Header = () => {
       </motion.div>
     </Link>
   );
+
+  const resolvePath = (item: string) => {
+    if (item === "Home") return "/";
+    if (item === "Snap Levels") return "/creator-levels";
+    return `/${item.toLowerCase().replace(" ", "-")}`;
+  };
 
   return (
     <header
@@ -89,26 +94,38 @@ const Header = () => {
           {/* Logo */}
           <Logo />
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
-            {["Home", "Services", "Snap Stream", "Contact"].map((item) => {
-              const path =
-                item === "Home" ? "/" : `/${item.toLowerCase().replace(" ", "-")}`;
-              return (
+          {/* ================= DESKTOP NAV ================= */}
+          <nav
+            className="hidden md:flex items-center gap-8"
+            aria-label="Main navigation"
+          >
+            {["Home", "Services", "Snap Stream", "Snap Levels", "Contact"].map(
+              (item) => (
                 <Link
                   key={item}
-                  to={path}
+                  to={resolvePath(item)}
                   className={`text-base font-medium px-2 py-1 rounded-lg transition-all duration-200 hover:text-accent ${
-                    scrolled ? "text-foreground" : "text-white/90 hover:text-white"
+                    scrolled
+                      ? "text-foreground"
+                      : "text-white/90 hover:text-white"
                   }`}
                 >
-                  {item}
+                  {item === "Snap Levels" ? (
+                    <span className="flex items-center gap-1">
+                      Snap Levels
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-400 text-black">
+                        NEW
+                      </span>
+                    </span>
+                  ) : (
+                    item
+                  )}
                 </Link>
-              );
-            })}
+              )
+            )}
           </nav>
 
-          {/* CTA Buttons */}
+          {/* ================= CTA / AUTH ================= */}
           <div className="hidden md:flex items-center gap-3">
             {loading ? (
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -119,15 +136,21 @@ const Header = () => {
                     <Avatar className="h-9 w-9">
                       <AvatarImage src={profile?.avatar_url || undefined} />
                       <AvatarFallback className="bg-accent text-accent-foreground text-sm">
-                        {profile?.display_name ? getInitials(profile.display_name) : "SS"}
+                        {profile?.display_name
+                          ? getInitials(profile.display_name)
+                          : "SS"}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="px-2 py-1.5">
-                    <p className="text-sm font-medium">{profile?.display_name || "Creator"}</p>
-                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                    <p className="text-sm font-medium">
+                      {profile?.display_name || "Creator"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {user.email}
+                    </p>
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
@@ -151,7 +174,9 @@ const Header = () => {
                 <Button
                   variant="ghost"
                   className={`rounded-lg px-4 py-2 transition-all ${
-                    scrolled ? "hover:bg-accent/10" : "text-white hover:bg-white/10"
+                    scrolled
+                      ? "hover:bg-accent/10"
+                      : "text-white hover:bg-white/10"
                   }`}
                   asChild
                 >
@@ -167,7 +192,7 @@ const Header = () => {
             )}
           </div>
 
-          {/* Mobile Menu Toggle */}
+          {/* ================= MOBILE TOGGLE ================= */}
           <button
             className={`md:hidden p-2 rounded-lg transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
               scrolled ? "hover:bg-accent/10" : "text-white hover:bg-white/10"
@@ -179,7 +204,7 @@ const Header = () => {
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* ================= MOBILE MENU ================= */}
         {isMenuOpen && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -188,25 +213,27 @@ const Header = () => {
             className="md:hidden py-4 border-t border-border bg-background/95 backdrop-blur-md"
           >
             <nav className="flex flex-col gap-2">
-              {["Home", "Services", "Snap Stream", "Contact"].map((item) => {
-                const path =
-                  item === "Home" ? "/" : `/${item.toLowerCase().replace(" ", "-")}`;
-                return (
+              {["Home", "Services", "Snap Stream", "Snap Levels", "Contact"].map(
+                (item) => (
                   <Link
                     key={item}
-                    to={path}
+                    to={resolvePath(item)}
                     className="text-base font-medium px-4 py-3 rounded-lg hover:bg-accent/10 hover:text-accent transition-all"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item}
                   </Link>
-                );
-              })}
+                )
+              )}
+
               <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-border">
                 {user ? (
                   <>
                     <Button variant="outline" className="rounded-lg" asChild>
-                      <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                      <Link
+                        to="/dashboard"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
                         Dashboard
                       </Link>
                     </Button>
@@ -221,7 +248,10 @@ const Header = () => {
                 ) : (
                   <>
                     <Button variant="outline" className="rounded-lg" asChild>
-                      <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                      <Link
+                        to="/login"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
                         Log in
                       </Link>
                     </Button>
@@ -229,7 +259,10 @@ const Header = () => {
                       className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold rounded-lg"
                       asChild
                     >
-                      <Link to="/signup" onClick={() => setIsMenuOpen(false)}>
+                      <Link
+                        to="/signup"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
                         Get Started
                       </Link>
                     </Button>

@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { PageFade } from "@/components/layout/PageFade";
+
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -15,6 +16,8 @@ import SnapStream from "./pages/SnapStream";
 import Services from "./pages/Services";
 import Dashboard from "./pages/Dashboard";
 import ForgotPassword from "./pages/ForgotPassword";
+import CreatorLevels from "./pages/CreatorLevels";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -29,6 +32,7 @@ const App = () => (
           <BrowserRouter>
             <PageFade>
               <Routes>
+                {/* Public Pages */}
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
@@ -36,6 +40,11 @@ const App = () => (
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/snap-stream" element={<SnapStream />} />
                 <Route path="/services" element={<Services />} />
+
+                {/* ✅ NEW PAGE: Creator Levels */}
+                <Route path="/creator-levels" element={<CreatorLevels />} />
+
+                {/* Protected Pages */}
                 <Route
                   path="/dashboard"
                   element={
@@ -44,7 +53,8 @@ const App = () => (
                     </ProtectedRoute>
                   }
                 />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+
+                {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </PageFade>

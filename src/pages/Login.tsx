@@ -58,7 +58,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-secondary/30 to-background">
+    <div className="min-h-screen flex flex-col bg-black">
       <Header />
       <main className="flex-1 flex items-center justify-center py-24 px-4">
         <Card className="w-full max-w-md shadow-xl border-border/50 bg-card/80 backdrop-blur-sm">
@@ -81,15 +81,21 @@ const Login = () => {
                     placeholder="you@example.com"
                     className="pl-10"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     required
                   />
                 </div>
               </div>
+
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">Password</Label>
-                  <Link to="/forgot-password" className="text-xs text-accent hover:underline">
+                  <Link
+                    to="/forgot-password"
+                    className="text-xs text-accent hover:underline"
+                  >
                     Forgot password?
                   </Link>
                 </div>
@@ -101,12 +107,19 @@ const Login = () => {
                     placeholder="Enter your password"
                     className="pl-10"
                     value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
                     required
                   />
                 </div>
               </div>
-              <Button type="submit" className="w-full bg-accent hover:bg-accent/90" disabled={loading}>
+
+              <Button
+                type="submit"
+                className="w-full bg-accent hover:bg-accent/90"
+                disabled={loading}
+              >
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -122,8 +135,13 @@ const Login = () => {
             </form>
 
             <div className="mt-6 text-center text-sm">
-              <span className="text-muted-foreground">Don't have an account? </span>
-              <Link to="/signup" className="text-accent hover:underline font-medium">
+              <span className="text-muted-foreground">
+                Don't have an account?{" "}
+              </span>
+              <Link
+                to="/signup"
+                className="text-accent hover:underline font-medium"
+              >
                 Sign up
               </Link>
             </div>
