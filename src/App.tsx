@@ -17,6 +17,14 @@ import Services from "./pages/Services";
 import Dashboard from "./pages/Dashboard";
 import ForgotPassword from "./pages/ForgotPassword";
 import CreatorLevels from "./pages/CreatorLevels";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsAndConditions from "./pages/TermsAndConditions";
+import Support from "./pages/Support";
+import DeleteAccount from "./pages/DeleteAccount";
+import Orders from "./pages/Orders";
+import OrderNew from "./pages/OrderNew";
+import OrderDetail from "./pages/OrderDetail";
+import OrderConfirmation from "./pages/OrderConfirmation";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -40,6 +48,14 @@ const App = () => (
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/snap-stream" element={<SnapStream />} />
                 <Route path="/services" element={<Services />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+                <Route path="/support" element={<Support />} />
+                <Route path="/delete-account" element={<DeleteAccount />} />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/orders/new" element={<OrderNew />} />
+                <Route path="/orders/:orderId" element={<OrderDetail />} />
+                <Route path="/orders/:orderId/confirmation" element={<OrderConfirmation />} />
 
                 {/* ✅ NEW PAGE: Creator Levels */}
                 <Route path="/creator-levels" element={<CreatorLevels />} />
