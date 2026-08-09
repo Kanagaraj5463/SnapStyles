@@ -7,12 +7,15 @@ import { CheckCircle2, Clock3, MessageCircle, Plus, Download } from "lucide-reac
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/animations/ScrollReveal";
 import { jsPDF } from "jspdf";
+import { useAuth } from "@/contexts/AuthContext";
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const location = useLocation();
-  const order = location.state as {
+  const { user, profile } = useAuth();
+
+  const order = (location.state as {
     orderId: string;
     shootType: string;
     date: string;
@@ -20,31 +23,94 @@ const OrderConfirmation = () => {
     location: string;
     people: number;
     notes?: string;
-  } | null;
+    amountPaid?: number;
+    coupon?: string;
+    paymentId?: string;
+  }) || null;
 
   const formattedDate = order?.date
     ? new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "long", year: "numeric" }).format(new Date(order.date))
     : "";
 
+  const userName = profile?.display_name || user?.email?.split("@")[0] || "SnapStyles Client";
+  const userEmail = user?.email || "Not provided";
+  const userBio = profile?.bio || "Premium creator profile.";
+  const appliedCoupon = order?.coupon ? order.coupon.toUpperCase() : "—";
+  const paymentReference = order?.paymentId || "N/A";
+  const amountPaidText = order?.amountPaid === 0 ? "FREE" : order?.amountPaid ? `₹${order.amountPaid.toFixed(0)}` : "₹1000";
+
   const downloadConfirmationPdf = () => {
-    if (!order) return;
+    if (!order) {
+      navigate("/orders");
+      return;
+    }
 
     const doc = new jsPDF({ unit: "pt", format: "a4" });
-    doc.setFontSize(20);
-    doc.text("SnapStyles Shoot Confirmation", 40, 60);
+    const pageWidth = 595;
+    const margin = 40;
+
+    doc.setFillColor(18, 18, 24);
+    doc.rect(0, 0, pageWidth, 842, "F");
+
+    doc.setFillColor(239, 68, 68);
+    doc.rect(margin, margin, pageWidth - margin * 2, 6, "F");
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(24);
+    doc.setTextColor(255, 255, 255);
+    doc.text("SnapStyles Shoot Confirmation", margin, 100);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(180, 180, 190);
+    doc.text("A premium confirmation document for your scheduled shoot booking.", margin, 120);
 
     doc.setFontSize(12);
-    doc.text(`Order ID: ${order.orderId}`, 40, 100);
-    doc.text(`Shoot Type: ${order.shootType}`, 40, 120);
-    doc.text(`Date: ${formattedDate}`, 40, 140);
-    doc.text(`Time: ${order.time} IST`, 40, 160);
-    doc.text(`Location: ${order.location}`, 40, 180);
-    doc.text(`Participants: ${order.people}`, 40, 200);
-    doc.text(`Notes: ${order.notes || "No additional notes."}`, 40, 220);
-    doc.text("Time Zone: India Standard Time (Asia/Kolkata)", 40, 240);
+    doc.setTextColor(255, 255, 255);
+    doc.text("Client details", margin, 160);
 
     doc.setFontSize(10);
-    doc.text("Thank you for booking with SnapStyles. Please keep this confirmation for your records.", 40, 280);
+    doc.setTextColor(190, 190, 200);
+    doc.text(`Name: ${userName}`, margin, 180);
+    doc.text(`Email: ${userEmail}`, margin, 195);
+    doc.text(`Profile: ${userBio}`, margin, 210);
+
+    const rightColumnX = pageWidth / 2 + 20;
+    doc.setFontSize(12);
+    doc.setTextColor(255, 255, 255);
+    doc.text("Booking summary", rightColumnX, 160);
+
+    doc.setFontSize(10);
+    doc.setTextColor(190, 190, 200);
+    doc.text(`Order ID: ${order.orderId}`, rightColumnX, 180);
+    doc.text(`Shoot Type: ${order.shootType}`, rightColumnX, 195);
+    doc.text(`Status: Confirmed`, rightColumnX, 210);
+    doc.text(`Date: ${formattedDate}`, rightColumnX, 225);
+    doc.text(`Time: ${order.time} IST`, rightColumnX, 240);
+    doc.text(`Amount Paid: ${amountPaidText}`, rightColumnX, 255);
+    doc.text(`Coupon: ${appliedCoupon}`, rightColumnX, 270);
+    doc.text(`Payment ID: ${paymentReference}`, rightColumnX, 285);
+
+    doc.setDrawColor(80, 80, 100);
+    doc.setLineWidth(0.5);
+    doc.line(margin, 300, pageWidth - margin, 300);
+
+    doc.setFontSize(12);
+    doc.setTextColor(255, 255, 255);
+    doc.text("Shoot details", margin, 330);
+
+    doc.setFontSize(10);
+    doc.setTextColor(190, 190, 200);
+    doc.text(`Location: ${order.location}`, margin, 350);
+    doc.text(`Participants: ${order.people}`, margin, 365);
+    doc.text(`Time Zone: India Standard Time (Asia/Kolkata)`, margin, 380);
+
+    const notesLines = doc.splitTextToSize(`Notes: ${order.notes || "No additional notes."}`, pageWidth - margin * 2);
+    doc.text(notesLines, margin, 405);
+
+    doc.setFontSize(10);
+    doc.setTextColor(140, 140, 160);
+    doc.text("Thank you for booking with SnapStyles. Please keep this document for your records.", margin, 500);
 
     doc.save(`${order.orderId}-confirmation.pdf`);
   };
@@ -98,6 +164,21 @@ const OrderConfirmation = () => {
                   <div className="rounded-3xl bg-slate-950 p-6">
                     <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Participants</p>
                     <p className="mt-3 text-lg font-semibold text-white">{order?.people ?? "—"}</p>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="rounded-3xl border border-red-500/10 bg-slate-950 p-4">
+                    <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Amount Paid</p>
+                    <p className="mt-3 text-lg font-semibold text-white">{order?.amountPaid === 0 ? "FREE" : order?.amountPaid ? `₹${order.amountPaid.toFixed(0)}` : "₹1000"}</p>
+                  </div>
+                  <div className="rounded-3xl border border-red-500/10 bg-slate-950 p-4">
+                    <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Coupon</p>
+                    <p className="mt-3 text-lg font-semibold text-white">{order?.coupon ? order.coupon.toUpperCase() : "—"}</p>
+                  </div>
+                  <div className="rounded-3xl border border-red-500/10 bg-slate-950 p-4">
+                    <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Payment ID</p>
+                    <p className="mt-3 text-sm text-slate-300 break-all">{order?.paymentId || "N/A"}</p>
                   </div>
                 </div>
 

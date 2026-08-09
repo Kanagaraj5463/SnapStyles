@@ -98,16 +98,26 @@ const OrderNew = () => {
   const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [shootType, setShootType] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
+  const [instagramHandle, setInstagramHandle] = useState("");
   const [date, setDate] = useState<Date | null>(null);
   const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
   const [people, setPeople] = useState(1);
   const [notes, setNotes] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+  const [couponApplied, setCouponApplied] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+
+  const baseAmount = 100000; // ₹1000 in paise
+  const amount = couponApplied ? 0 : baseAmount;
+  const displayAmount = amount === 0 ? "FREE" : `₹${(amount / 100).toFixed(0)}`;
 
   const isStepValid = useMemo(() => {
     if (step === 1) {
-      return Boolean(shootType && location && people > 0);
+      return Boolean(shootType && customerName && contactNumber && instagramHandle && location && people > 0);
     }
     if (step === 2) {
       return Boolean(date && time);
@@ -127,8 +137,60 @@ const OrderNew = () => {
 
   const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
 
-  const handleConfirm = async () => {
-    if (!date || !time || !shootType || !location || people <= 0) {
+  const loadRazorpayScript = () => {
+    return new Promise<boolean>((resolve) => {
+      if ((window as any).Razorpay) {
+        resolve(true);
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const applyCoupon = () => {
+    const code = couponCode.trim().toLowerCase();
+    if (code === "creators") {
+      setCouponApplied(true);
+      toast({ title: "Coupon applied", description: "Creators coupon gives you a free shoot." });
+      return;
+    }
+
+    setCouponApplied(false);
+    toast({ title: "Invalid coupon", description: "Use coupon code creators for a free shoot." });
+  };
+
+  const createOrderId = () => {
+    const dateKey = `${date?.getFullYear()}${String(date?.getMonth() + 1).padStart(2, "0")}${String(date?.getDate()).padStart(2, "0")}`;
+    const randomSuffix = String(Math.floor(Math.random() * 900) + 100);
+    return `SS-${dateKey}-${randomSuffix}`;
+  };
+
+  const handlePaymentSuccess = (orderId: string, paymentId?: string) => {
+    setIsPaymentProcessing(false);
+    navigate(`/orders/${orderId}/confirmation`, {
+      state: {
+        orderId,
+        shootType,
+        date: date?.toISOString(),
+        time,
+        location,
+        people,
+        notes,
+        status: "Confirmed",
+        amountPaid: amount === 0 ? 0 : amount / 100,
+        coupon: couponApplied ? "creators" : undefined,
+        paymentId,
+      },
+    });
+  };
+
+  const handlePayment = async () => {
+    if (!date || !time || !shootType || !customerName || !contactNumber || !instagramHandle || !location || people <= 0) {
       toast({ title: "Please fill all required booking details." });
       return;
     }
@@ -139,22 +201,60 @@ const OrderNew = () => {
       return;
     }
 
-    setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSubmitting(false);
-    const orderId = `SS-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}-001`;
-    navigate(`/orders/${orderId}/confirmation`, {
-      state: {
-        orderId,
-        shootType,
-        date: date.toISOString(),
-        time,
-        location,
-        people,
-        notes,
-        status: "Confirmed",
+    const orderId = createOrderId();
+    const selectedAmount = amount;
+
+    if (selectedAmount === 0) {
+      toast({ title: "Free shoot confirmed", description: "Your shoot is booked with the creators coupon." });
+      handlePaymentSuccess(orderId);
+      return;
+    }
+
+    setIsPaymentProcessing(true);
+    const loaded = await loadRazorpayScript();
+    if (!loaded) {
+      setIsPaymentProcessing(false);
+      toast({ title: "Payment failed", description: "Unable to load Razorpay checkout. Please try again." });
+      return;
+    }
+
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_YOUR_KEY_ID",
+      amount: selectedAmount,
+      currency: "INR",
+      name: "SnapStyles",
+      description: `${shootType} shoot booking`,
+      prefill: {
+        name: "SnapStyles Client",
+        email: "client@example.com",
       },
-    });
+      notes: {
+        shootType,
+        location,
+        people: String(people),
+        date: date.toISOString(),
+      },
+      theme: { color: "#ef4444" },
+      handler: (response: any) => {
+        handlePaymentSuccess(orderId, response?.razorpay_payment_id);
+      },
+      modal: {
+        ondismiss: () => {
+          setIsPaymentProcessing(false);
+          toast({ title: "Payment cancelled", description: "Razorpay checkout was closed before completion." });
+        },
+      },
+    };
+
+    const Razorpay = (window as any).Razorpay;
+    if (!Razorpay) {
+      setIsPaymentProcessing(false);
+      toast({ title: "Payment failed", description: "Razorpay is not available." });
+      return;
+    }
+
+    const rzp = new Razorpay(options);
+    rzp.open();
   };
 
   return (
@@ -199,6 +299,7 @@ const OrderNew = () => {
                       >
                         <div className="space-y-3">
                           <Label htmlFor="shoot-type">Shoot Type</Label>
+                          <p className="text-sm text-slate-400">Enter your name, contact number, Instagram handle, venue address, and the shoot date to continue.</p>
                           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                             {shootTypes.map((type) => {
                               const selected = shootType === type.id;
@@ -237,14 +338,47 @@ const OrderNew = () => {
 
                         <div className="grid gap-4 sm:grid-cols-2">
                           <div className="space-y-2">
-                            <Label htmlFor="location">Location</Label>
+                            <Label htmlFor="customer-name">Your Name</Label>
+                            <Input
+                              id="customer-name"
+                              placeholder="Enter your full name"
+                              value={customerName}
+                              onChange={(e) => setCustomerName(e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="contact-number">Contact Number</Label>
+                            <Input
+                              id="contact-number"
+                              type="tel"
+                              placeholder="+91 98765 43210"
+                              value={contactNumber}
+                              onChange={(e) => setContactNumber(e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor="instagram-handle">Instagram Handle</Label>
+                            <Input
+                              id="instagram-handle"
+                              placeholder="@yourhandle"
+                              value={instagramHandle}
+                              onChange={(e) => setInstagramHandle(e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="location">Google Maps Location</Label>
                             <Input
                               id="location"
-                              placeholder="Bangalore, India"
+                              placeholder="Google Maps venue address"
                               value={location}
                               onChange={(e) => setLocation(e.target.value)}
                             />
                           </div>
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-2">
                           <div className="space-y-2">
                             <Label htmlFor="people">Number of People</Label>
                             <Input
@@ -348,6 +482,33 @@ const OrderNew = () => {
                             </div>
                           </div>
                         </div>
+                        <div className="rounded-3xl border border-red-500/20 bg-slate-950 p-6">
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm uppercase tracking-[0.25em] text-slate-400">Payment</p>
+                            <span className="rounded-full bg-slate-900/80 px-3 py-1 text-xs uppercase text-slate-400">{displayAmount}</span>
+                          </div>
+                          <div className="mt-4 grid gap-3 sm:grid-cols-[1fr,auto]">
+                            <Input
+                              id="coupon"
+                              placeholder="Coupon code"
+                              value={couponCode}
+                              onChange={(e) => setCouponCode(e.target.value)}
+                            />
+                            <Button
+                              type="button"
+                              className="bg-red-500 text-slate-950 hover:bg-red-400"
+                              onClick={applyCoupon}
+                            >
+                              Apply
+                            </Button>
+                          </div>
+                          <p className="mt-3 text-sm text-slate-400">
+                            Use code <span className="font-semibold text-white">creators</span> for a free shoot.
+                          </p>
+                          {couponApplied && (
+                            <p className="mt-3 text-sm text-emerald-300">Coupon applied — your shoot is free.</p>
+                          )}
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -365,10 +526,10 @@ const OrderNew = () => {
                 ) : (
                   <Button
                     className="w-full sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90"
-                    onClick={handleConfirm}
-                    disabled={isSubmitting}
+                    onClick={handlePayment}
+                    disabled={isPaymentProcessing}
                   >
-                    {isSubmitting ? "Confirming..." : "Confirm Shoot"}
+                    {isPaymentProcessing ? "Processing..." : couponApplied ? "Complete Free Shoot" : "Pay ₹1000"}
                   </Button>
                 )}
               </div>

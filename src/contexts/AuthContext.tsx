@@ -23,6 +23,7 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
   refreshProfile: () => Promise<void>;
+  updateProfile: (updates: Partial<Profile>) => Promise<{ error: Error | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -70,6 +71,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (user) {
       const profileData = await fetchProfile(user.id);
       setProfile(profileData);
+    }
+  };
+
+  const updateProfile = async (updates: Partial<Profile>) => {
+    if (!user) {
+      return { error: new Error("Not authenticated") };
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .update(updates)
+        .eq("id", user.id)
+        .select()
+        .single();
+
+      if (error) {
+        return { error };
+      }
+
+      setProfile(data as Profile);
+      return { error: null };
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      return { error: error as Error };
     }
   };
 
@@ -182,6 +208,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     signOut,
     resetPassword,
     refreshProfile,
+    updateProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
