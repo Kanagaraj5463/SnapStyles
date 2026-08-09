@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
 import { AnimatePresence, motion } from "framer-motion";
 import ScrollReveal from "@/components/animations/ScrollReveal";
 import { Info, Sparkles } from "lucide-react";
@@ -108,6 +109,7 @@ const OrderNew = () => {
   const [notes, setNotes] = useState("");
   const [couponCode, setCouponCode] = useState("");
   const [couponApplied, setCouponApplied] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
 
@@ -192,6 +194,11 @@ const OrderNew = () => {
   const handlePayment = async () => {
     if (!date || !time || !shootType || !customerName || !contactNumber || !instagramHandle || !location || people <= 0) {
       toast({ title: "Please fill all required booking details." });
+      return;
+    }
+
+    if (!consentChecked) {
+      toast({ title: "Please accept the Terms & Conditions and consent notice." });
       return;
     }
 
@@ -508,6 +515,36 @@ const OrderNew = () => {
                           {couponApplied && (
                             <p className="mt-3 text-sm text-emerald-300">Coupon applied — your shoot is free.</p>
                           )}
+                        </div>
+                        <div className="rounded-3xl border border-slate-800 bg-slate-900 p-5 text-sm leading-7 text-slate-300">
+                          <h3 className="text-lg font-semibold text-white">Terms & Conditions & Personal Data Consent</h3>
+                          <p className="mt-3 text-slate-400">
+                            By submitting this booking form, I confirm that the information I provide is accurate and that I am voluntarily providing my personal details for the purpose of processing and managing my booking.
+                          </p>
+                          <div className="mt-4 space-y-3">
+                            <p className="text-slate-400">Personal Information & Consent</p>
+                            <ul className="list-disc space-y-2 pl-5 text-slate-300">
+                              <li>I consent to the collection and use of the information I provide for booking, scheduling, communication, and related services.</li>
+                              <li>I understand that I should <strong>not provide sensitive, confidential, financial, or unnecessary personal information</strong> through this form.</li>
+                              <li>I am responsible for ensuring that the information I submit does not contain confidential details belonging to another person or organization.</li>
+                              <li>My information will be handled only for purposes related to my booking and the services requested, subject to the company's applicable privacy practices.</li>
+                              <li>I understand that submitting this form constitutes my <strong>personal consent</strong> to the collection and processing of the information provided.</li>
+                            </ul>
+                            <p className="text-slate-400">User Responsibility</p>
+                            <p>
+                              I understand that I am responsible for the information I choose to submit. I should not use the booking form to share passwords, payment credentials, government identification numbers, confidential business information, or other highly sensitive information unless specifically required and securely requested by the company.
+                            </p>
+                          </div>
+                          <div className="mt-5 flex items-start gap-3">
+                            <Checkbox
+                              id="terms-consent"
+                              checked={consentChecked}
+                              onCheckedChange={(checked) => setConsentChecked(Boolean(checked))}
+                            />
+                            <label htmlFor="terms-consent" className="text-sm text-slate-200 leading-6">
+                              <span className="font-semibold text-white">I have read and agree to the Terms & Conditions and consent to the collection and processing of the information I have provided for my booking.</span>
+                            </label>
+                          </div>
                         </div>
                       </motion.div>
                     )}
