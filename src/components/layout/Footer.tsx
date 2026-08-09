@@ -90,16 +90,28 @@ const Footer = () => {
           </p>
           <div className="flex gap-6 items-center">
             <Link
-              to="/privacy"
+              to="/privacy-policy"
               className="text-primary-foreground/50 hover:text-accent transition-colors text-sm"
             >
               Privacy Policy
             </Link>
             <Link
-              to="/terms"
+              to="/terms-and-conditions"
               className="text-primary-foreground/50 hover:text-accent transition-colors text-sm"
             >
               Terms of Service
+            </Link>
+            <Link
+              to="/support"
+              className="text-primary-foreground/50 hover:text-accent transition-colors text-sm"
+            >
+              Support
+            </Link>
+            <Link
+              to="/delete-account"
+              className="text-primary-foreground/50 hover:text-accent transition-colors text-sm"
+            >
+              Delete Account
             </Link>
             <AnimationToggle />
           </div>

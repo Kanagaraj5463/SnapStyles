@@ -43,13 +43,19 @@ const Contact = () => {
     {
       icon: Mail,
       label: "Email",
-      value: "raju@snapstyles.in",
-      href: "Mail Now",
+      value: "snapstyles@gmail.com",
+      href: "mailto:snapstyles@gmail.com",
+    },
+    {
+      icon: Phone,
+      label: "Phone",
+      value: "+91 999430546",
+      href: "tel:+91999430546",
     },
     {
       icon: MapPin,
-      label: "Location",
-      value: "Bengaluru",
+      label: "Country",
+      value: "India",
       href: null,
     },
   ];
@@ -149,6 +155,20 @@ const Contact = () => {
                         {isSubmitting ? "Sending..." : "Send Message"}
                         <MessageCircle className="ml-2 w-4 h-4" />
                       </Button>
+                      <div className="grid gap-3 sm:grid-cols-2 mt-4">
+                        <a
+                          href="mailto:snapstyles@gmail.com"
+                          className="inline-flex items-center justify-center rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition hover:border-accent hover:text-accent"
+                        >
+                          <Mail className="mr-2 h-4 w-4" /> Email Us
+                        </a>
+                        <a
+                          href="tel:+91999430546"
+                          className="inline-flex items-center justify-center rounded-xl bg-accent px-4 py-3 text-sm font-medium text-accent-foreground transition hover:bg-accent/90"
+                        >
+                          <Phone className="mr-2 h-4 w-4" /> Call Us
+                        </a>
+                      </div>
                     </form>
                   </CardContent>
                 </Card>
