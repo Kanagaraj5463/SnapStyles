@@ -21,10 +21,10 @@ const sampleOrder = {
 };
 
 const statusStyles: Record<string, string> = {
-  Upcoming: "bg-accent/10 text-accent",
-  Confirmed: "bg-emerald-100 text-emerald-700",
-  Completed: "bg-slate-100 text-slate-700",
-  Cancelled: "bg-destructive/10 text-destructive",
+  Upcoming: "bg-red-500/10 text-red-200",
+  Confirmed: "bg-red-600/15 text-red-100",
+  Completed: "bg-slate-800 text-slate-300",
+  Cancelled: "bg-red-700/15 text-red-200",
 };
 
 const OrderDetail = () => {
@@ -59,36 +59,36 @@ const OrderDetail = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
       <Header />
       <main className="flex-1 pt-24 pb-16">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="max-w-4xl mx-auto mb-10 text-center">
-              <span className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-sm font-semibold text-accent">
-                <ShieldCheck className="w-4 h-4" /> Order Details
+              <span className="inline-flex items-center gap-2 rounded-full bg-red-500/10 px-3 py-1 text-sm font-semibold text-red-200 shadow-sm shadow-red-500/20">
+                <ShieldCheck className="w-4 h-4 text-red-300" /> Order Details
               </span>
-              <h1 className="mt-6 text-4xl md:text-5xl font-display font-bold">Booking details for {order.shootType} shoot</h1>
-              <p className="mt-4 text-muted-foreground text-lg leading-relaxed">
+              <h1 className="mt-6 text-4xl md:text-5xl font-display font-bold text-white">Booking details for {order.shootType} shoot</h1>
+              <p className="mt-4 text-slate-300 text-lg leading-relaxed">
                 Review your scheduled shoot, update your plan, or contact support for any changes.
               </p>
             </div>
           </ScrollReveal>
 
           <div className="grid gap-8 lg:grid-cols-[1.2fr,0.8fr]">
-            <Card className="rounded-3xl border border-border bg-muted/70 shadow-xl shadow-black/5">
+            <Card className="rounded-3xl border border-red-500/10 bg-slate-900/90 shadow-[0_40px_120px_-60px_rgba(248,113,113,0.35)]">
               <CardHeader>
-                <CardTitle>Order #{order.id}</CardTitle>
+                <CardTitle className="text-white">Order #{order.id}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid gap-6 sm:grid-cols-2">
-                  <div className="rounded-3xl bg-background p-6">
-                    <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Shoot</p>
-                    <p className="mt-3 text-lg font-semibold">{order.shootType}</p>
-                    <p className="mt-2 text-sm text-muted-foreground">{order.notes}</p>
+                  <div className="rounded-3xl bg-slate-950 p-6">
+                    <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Shoot</p>
+                    <p className="mt-3 text-lg font-semibold text-white">{order.shootType}</p>
+                    <p className="mt-2 text-sm text-slate-400">{order.notes}</p>
                   </div>
-                  <div className="rounded-3xl bg-background p-6">
-                    <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Status</p>
+                  <div className="rounded-3xl bg-slate-950 p-6">
+                    <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Status</p>
                     <span className={`mt-3 inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[order.status] || "bg-slate-100 text-slate-700"}`}>
                       {order.status}
                     </span>
@@ -96,24 +96,24 @@ const OrderDetail = () => {
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-3xl bg-background p-6">
-                    <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Schedule</p>
-                    <div className="mt-3 space-y-2 text-sm text-muted-foreground">
-                      <p className="font-semibold text-foreground">{new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "long", year: "numeric" }).format(new Date(order.date))}</p>
-                      <p className="inline-flex items-center gap-2"><Clock3 className="w-4 h-4" /> {order.time} IST</p>
-                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Asia/Kolkata</p>
+                  <div className="rounded-3xl bg-slate-950 p-6">
+                    <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Schedule</p>
+                    <div className="mt-3 space-y-2 text-sm text-slate-300">
+                      <p className="font-semibold text-white">{new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "long", year: "numeric" }).format(new Date(order.date))}</p>
+                      <p className="inline-flex items-center gap-2 text-slate-300"><Clock3 className="w-4 h-4 text-red-400" /> {order.time} IST</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Asia/Kolkata</p>
                     </div>
                   </div>
-                  <div className="rounded-3xl bg-background p-6">
-                    <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Location</p>
-                    <p className="mt-3 text-lg font-semibold">{order.location}</p>
-                    <p className="mt-2 text-sm text-muted-foreground">{order.people} people</p>
+                  <div className="rounded-3xl bg-slate-950 p-6">
+                    <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Location</p>
+                    <p className="mt-3 text-lg font-semibold text-white">{order.location}</p>
+                    <p className="mt-2 text-sm text-slate-300">{order.people} people</p>
                   </div>
                 </div>
 
-                <div className="rounded-3xl bg-background p-6">
-                  <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Notes</p>
-                  <p className="mt-3 text-sm leading-7 text-muted-foreground">{order.notes || "No additional notes."}</p>
+                <div className="rounded-3xl bg-slate-950 p-6">
+                  <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Notes</p>
+                  <p className="mt-3 text-sm leading-7 text-slate-300">{order.notes || "No additional notes."}</p>
                 </div>
               </CardContent>
             </Card>
@@ -132,13 +132,13 @@ const OrderDetail = () => {
               <div className="flex flex-col gap-3">
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full border-red-500 text-red-200 hover:border-red-400 hover:text-white"
                   onClick={() => navigate("/support")}
                 >
                   Contact Support
                 </Button>
                 <Button
-                  className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
+                  className="w-full bg-red-500 text-slate-950 hover:bg-red-400"
                   disabled={!isUpcoming || isRescheduling}
                   onClick={handleReschedule}
                 >

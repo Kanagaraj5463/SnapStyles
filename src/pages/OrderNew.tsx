@@ -4,23 +4,72 @@ import { Button } from "@/components/ui/button";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import ScrollReveal from "@/components/animations/ScrollReveal";
-import { ChevronDown, Sparkles } from "lucide-react";
+import { Info, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const shootTypes = [
-  "Portrait",
-  "Wedding",
-  "Event",
-  "Product",
-  "Fashion",
-  "Pre-wedding",
-  "Other",
+  {
+    id: "Portrait",
+    title: "Portrait",
+    description: "Individual portraits with stylised lighting, mood, and expression.",
+  },
+  {
+    id: "Wedding",
+    title: "Wedding",
+    description: "Cinematic wedding coverage for ceremonies, portraits, and celebrations.",
+  },
+  {
+    id: "Event",
+    title: "Event",
+    description: "Live event photography for parties, launches, and corporate gatherings.",
+  },
+  {
+    id: "Product",
+    title: "Product",
+    description: "Clean product imagery for catalogs, ads, and online stores.",
+  },
+  {
+    id: "Fashion",
+    title: "Fashion",
+    description: "Editorial fashion shoots with styling and creative direction.",
+  },
+  {
+    id: "Pre-wedding",
+    title: "Pre-wedding",
+    description: "Romantic pre-wedding sessions with cinematic storytelling.",
+  },
+  {
+    id: "Car",
+    title: "Car",
+    description: "Automotive photography for cars, bikes, and lifestyle mobility shoots.",
+  },
+  {
+    id: "Delivery",
+    title: "Delivery",
+    description: "On-location delivery and logistics imagery for commerce and brands.",
+  },
+  {
+    id: "Model",
+    title: "Model",
+    description: "Portfolio and agency model shoots with a professional look.",
+  },
+  {
+    id: "Casual",
+    title: "Casual",
+    description: "Relaxed lifestyle shoots for social media, branding, and content.",
+  },
+  {
+    id: "Other",
+    title: "Other",
+    description: "Custom shoot style — describe your vision in the notes.",
+  },
 ];
 
 const formatDate = (date: Date | null) => {
@@ -66,6 +115,8 @@ const OrderNew = () => {
     return true;
   }, [step, shootType, location, people, date, time]);
 
+  const selectedType = shootTypes.find((type) => type.id === shootType);
+
   const handleNext = () => {
     if (!isStepValid) {
       toast({ title: "Please complete all required fields." });
@@ -92,7 +143,7 @@ const OrderNew = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsSubmitting(false);
     const orderId = `SS-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}-001`;
-    navigate(`/orders/${orderId}`, {
+    navigate(`/orders/${orderId}/confirmation`, {
       state: {
         orderId,
         shootType,
@@ -107,149 +158,199 @@ const OrderNew = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
       <Header />
       <main className="flex-1 pt-24 pb-16">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <div className="max-w-4xl mx-auto text-center mb-10">
-              <span className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-sm font-semibold text-accent">
-                <Sparkles className="w-4 h-4" /> Book a Shoot
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              className="max-w-4xl mx-auto text-center mb-10 rounded-[2rem] border border-red-500/10 bg-slate-900/80 p-8 shadow-[0_30px_80px_-40px_rgba(248,113,113,0.55)]"
+            >
+              <span className="inline-flex items-center gap-2 rounded-full bg-red-500/10 px-3 py-1 text-sm font-semibold text-red-300">
+                <Sparkles className="w-4 h-4 text-red-400" /> Book a Shoot
               </span>
-              <h1 className="mt-6 text-4xl md:text-5xl font-display font-bold">Schedule your shoot in IST.</h1>
-              <p className="mt-4 text-muted-foreground text-lg leading-relaxed">
+              <h1 className="mt-6 text-4xl md:text-5xl font-display font-bold text-white">Schedule your shoot in IST.</h1>
+              <p className="mt-4 text-slate-300 text-lg leading-relaxed">
                 Choose your preferred shoot type, location, and time in India Standard Time (Asia/Kolkata).
               </p>
-            </div>
+            </motion.div>
           </ScrollReveal>
 
           <div className="grid gap-8 lg:grid-cols-[1.3fr,0.9fr]">
             <div className="space-y-6">
-              <Card className="rounded-3xl border border-border bg-muted/70 shadow-xl shadow-black/5">
+              <Card className="rounded-3xl border border-red-500/20 bg-slate-950/90 shadow-[0_40px_120px_-60px_rgba(248,113,113,0.65)]">
                 <CardHeader>
                   <CardTitle>Step {step} of 3</CardTitle>
                   <CardDescription>Select the details for your shoot booking.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  {step === 1 && (
-                    <div className="space-y-6">
-                      <div className="space-y-3">
-                        <Label htmlFor="shoot-type">Shoot Type</Label>
-                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                          {shootTypes.map((type) => (
-                            <button
-                              key={type}
-                              type="button"
-                              onClick={() => setShootType(type)}
-                              className={`rounded-3xl border px-4 py-3 text-left transition ${shootType === type ? "border-accent bg-accent/10" : "border-border bg-background hover:border-accent"}`}
-                            >
-                              <p className="font-medium">{type}</p>
-                            </button>
-                          ))}
+                  <AnimatePresence mode="wait">
+                    {step === 1 && (
+                      <motion.div
+                        key="step-1"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -16 }}
+                        transition={{ duration: 0.35 }}
+                        className="space-y-6"
+                      >
+                        <div className="space-y-3">
+                          <Label htmlFor="shoot-type">Shoot Type</Label>
+                          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            {shootTypes.map((type) => {
+                              const selected = shootType === type.id;
+                              return (
+                                <motion.button
+                                  key={type.id}
+                                  type="button"
+                                  onClick={() => setShootType(type.id)}
+                                  whileHover={{ y: -4, scale: 1.02 }}
+                                  whileTap={{ scale: 0.98 }}
+                                  className={`rounded-3xl border px-4 py-4 text-left transition ${selected ? "border-red-500 bg-red-600/15 text-white shadow-[0_15px_40px_-24px_rgba(248,113,113,0.85)]" : "border-slate-800 bg-slate-950/75 text-slate-100 hover:border-red-500"}`}
+                                >
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                      <p className="font-medium">{type.title}</p>
+                                      <p className={`mt-1 text-sm ${selected ? "text-red-200" : "text-slate-400"}`}>
+                                        {type.description}
+                                      </p>
+                                    </div>
+                                    <HoverCard>
+                                      <HoverCardTrigger asChild>
+                                        <span className={`flex h-9 w-9 items-center justify-center rounded-full ${selected ? "bg-red-500 text-slate-950" : "bg-slate-800 text-slate-300"} hover:bg-red-500 hover:text-slate-950`}>
+                                          <Info className="h-4 w-4" />
+                                        </span>
+                                      </HoverCardTrigger>
+                                      <HoverCardContent className="text-sm leading-6 text-foreground">
+                                        {type.description}
+                                      </HoverCardContent>
+                                    </HoverCard>
+                                  </div>
+                                </motion.button>
+                              );
+                            })}
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor="location">Location</Label>
+                            <Input
+                              id="location"
+                              placeholder="Bangalore, India"
+                              value={location}
+                              onChange={(e) => setLocation(e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="people">Number of People</Label>
+                            <Input
+                              id="people"
+                              type="number"
+                              min={1}
+                              value={people}
+                              onChange={(e) => setPeople(Number(e.target.value))}
+                            />
+                          </div>
+                        </div>
+
                         <div className="space-y-2">
-                          <Label htmlFor="location">Location</Label>
+                          <Label htmlFor="notes">Additional Requirements / Notes</Label>
+                          <Textarea
+                            id="notes"
+                            placeholder="Outdoor sunset shoot, props, wardrobe notes..."
+                            rows={4}
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {step === 2 && (
+                      <motion.div
+                        key="step-2"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -16 }}
+                        transition={{ duration: 0.35 }}
+                        className="space-y-6"
+                      >
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <Label>Choose a date</Label>
+                              <p className="text-sm text-slate-400">Only future IST dates are allowed.</p>
+                            </div>
+                            <span className="rounded-full bg-slate-900/80 px-3 py-1 text-xs uppercase tracking-[0.25em] text-slate-400">Asia/Kolkata</span>
+                          </div>
+                          <div className="rounded-3xl border border-slate-800 bg-slate-950 p-5">
+                            <Calendar
+                              mode="single"
+                              selected={date ?? undefined}
+                              onSelect={(selected) => setDate(selected)}
+                              disabled={[{ before: new Date() }]}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <Label htmlFor="time">Shoot Time</Label>
                           <Input
-                            id="location"
-                            placeholder="Bangalore, India"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
+                            id="time"
+                            type="time"
+                            value={time}
+                            onChange={(e) => setTime(e.target.value)}
                           />
+                          <p className="text-sm text-slate-400">Your time is saved and shown in India Standard Time (IST).</p>
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="people">Number of People</Label>
-                          <Input
-                            id="people"
-                            type="number"
-                            min={1}
-                            value={people}
-                            onChange={(e) => setPeople(Number(e.target.value))}
-                          />
-                        </div>
-                      </div>
+                      </motion.div>
+                    )}
 
-                      <div className="space-y-2">
-                        <Label htmlFor="notes">Additional Requirements / Notes</Label>
-                        <Textarea
-                          id="notes"
-                          placeholder="Outdoor sunset shoot, props, wardrobe notes..."
-                          rows={4}
-                          value={notes}
-                          onChange={(e) => setNotes(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {step === 2 && (
-                    <div className="space-y-6">
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <Label>Choose a date</Label>
-                            <p className="text-sm text-muted-foreground">Only future IST dates are allowed.</p>
-                          </div>
-                          <span className="rounded-full bg-muted px-3 py-1 text-xs uppercase tracking-[0.25em] text-muted-foreground">Asia/Kolkata</span>
-                        </div>
-                        <div className="rounded-3xl border border-border bg-background p-5">
-                          <Calendar
-                            mode="single"
-                            selected={date ?? undefined}
-                            onSelect={(selected) => setDate(selected)}
-                            disabled={[{ before: new Date() }]}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-3">
-                        <Label htmlFor="time">Shoot Time</Label>
-                        <Input
-                          id="time"
-                          type="time"
-                          value={time}
-                          onChange={(e) => setTime(e.target.value)}
-                        />
-                        <p className="text-sm text-muted-foreground">Your time is saved and shown in India Standard Time (IST).</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {step === 3 && (
-                    <div className="space-y-6">
-                      <div className="rounded-3xl border border-border bg-background p-6">
-                        <h3 className="text-xl font-semibold mb-4">Shoot Summary</h3>
-                        <div className="space-y-3 text-sm leading-7 text-muted-foreground">
-                          <div>
-                            <p className="font-semibold">Shoot Type</p>
-                            <p>{shootType || "—"}</p>
-                          </div>
-                          <div>
-                            <p className="font-semibold">Date</p>
-                            <p>{formatDate(date)}</p>
-                          </div>
-                          <div>
-                            <p className="font-semibold">Time</p>
-                            <p>{formatTime(time)} IST</p>
-                          </div>
-                          <div>
-                            <p className="font-semibold">Location</p>
-                            <p>{location || "—"}</p>
-                          </div>
-                          <div>
-                            <p className="font-semibold">People</p>
-                            <p>{people}</p>
-                          </div>
-                          <div>
-                            <p className="font-semibold">Additional Notes</p>
-                            <p>{notes || "No extra notes provided."}</p>
+                    {step === 3 && (
+                      <motion.div
+                        key="step-3"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -16 }}
+                        transition={{ duration: 0.35 }}
+                        className="space-y-6"
+                      >
+                        <div className="rounded-3xl border border-red-500/20 bg-slate-950 p-6">
+                          <h3 className="text-xl font-semibold mb-4 text-white">Shoot Summary</h3>
+                          <div className="space-y-3 text-sm leading-7 text-slate-300">
+                            <div>
+                              <p className="font-semibold text-white">Shoot Type</p>
+                              <p>{shootType || "—"}</p>
+                            </div>
+                            <div>
+                              <p className="font-semibold text-white">Date</p>
+                              <p>{formatDate(date)}</p>
+                            </div>
+                            <div>
+                              <p className="font-semibold text-white">Time</p>
+                              <p>{formatTime(time)} IST</p>
+                            </div>
+                            <div>
+                              <p className="font-semibold text-white">Location</p>
+                              <p>{location || "—"}</p>
+                            </div>
+                            <div>
+                              <p className="font-semibold text-white">People</p>
+                              <p>{people}</p>
+                            </div>
+                            <div>
+                              <p className="font-semibold text-white">Additional Notes</p>
+                              <p>{notes || "No extra notes provided."}</p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </CardContent>
               </Card>
 
@@ -274,31 +375,45 @@ const OrderNew = () => {
             </div>
 
             <aside className="space-y-6">
-              <Card className="rounded-3xl border border-border bg-background p-6 shadow-xl shadow-black/5">
+              <Card className="rounded-3xl border border-red-500/20 bg-slate-950/95 p-6 shadow-[0_35px_100px_-60px_rgba(248,113,113,0.65)]">
                 <CardHeader>
                   <CardTitle>Booking Details</CardTitle>
                   <CardDescription>Everything is shown in IST.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <p className="font-semibold text-foreground">Selected Type</p>
-                    <p>{shootType || "Choose a shoot type"}</p>
+                  <div className="space-y-2 text-sm text-slate-300">
+                    <p className="font-semibold text-white">Selected Type</p>
+                    <p>{selectedType?.title || "Choose a shoot type"}</p>
                   </div>
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <p className="font-semibold text-foreground">Schedule</p>
+                  {selectedType && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35 }}
+                      className="rounded-3xl border border-red-500/20 bg-red-500/10 p-4"
+                    >
+                      <p className="text-sm text-red-200">{selectedType.description}</p>
+                    </motion.div>
+                  )}
+                  <div className="space-y-2 text-sm text-slate-300">
+                    <p className="font-semibold text-white">Schedule</p>
                     <p>{formatDate(date)} • {formatTime(time)} IST</p>
                   </div>
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <p className="font-semibold text-foreground">Location</p>
+                  <div className="space-y-2 text-sm text-slate-300">
+                    <p className="font-semibold text-white">Location</p>
                     <p>{location || "Add a location"}</p>
                   </div>
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <p className="font-semibold text-foreground">Participants</p>
+                  <div className="space-y-2 text-sm text-slate-300">
+                    <p className="font-semibold text-white">Participants</p>
                     <p>{people}</p>
                   </div>
-                  <div className="rounded-3xl border border-border bg-muted/70 p-4">
-                    <p className="text-sm text-muted-foreground">All times are managed in India Standard Time (IST) · Asia/Kolkata.</p>
-                  </div>
+                  <motion.div
+                    animate={{ boxShadow: selectedType ? "0 0 60px rgba(248,113,113,0.2)" : "0 0 0 rgba(0,0,0,0)" }}
+                    transition={{ duration: 0.4 }}
+                    className="rounded-3xl border border-red-500/10 bg-slate-900/90 p-4"
+                  >
+                    <p className="text-sm text-slate-300">All times are managed in India Standard Time (IST) · Asia/Kolkata.</p>
+                  </motion.div>
                 </CardContent>
               </Card>
 
