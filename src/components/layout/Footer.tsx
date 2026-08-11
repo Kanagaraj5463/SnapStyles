@@ -29,7 +29,7 @@ const Footer = () => {
                 <Send className="w-5 h-5" />
               </a>
               <a
-                href="https://instagram.com/snapstyles"
+                href="https://www.instagram.com/snapstyles_official"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"

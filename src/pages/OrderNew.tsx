@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
 import { AnimatePresence, motion } from "framer-motion";
 import ScrollReveal from "@/components/animations/ScrollReveal";
 import { Info, Sparkles } from "lucide-react";
@@ -16,59 +17,54 @@ import { useToast } from "@/hooks/use-toast";
 
 const shootTypes = [
   {
-    id: "Portrait",
-    title: "Portrait",
-    description: "Individual portraits with stylised lighting, mood, and expression.",
+    id: "bridal",
+    title: "Bridal Shoot",
+    description: "Elegant bridal portraits and pre-wedding sessions.",
   },
   {
-    id: "Wedding",
-    title: "Wedding",
-    description: "Cinematic wedding coverage for ceremonies, portraits, and celebrations.",
+    id: "car-delivery",
+    title: "Car Delivery Shoot",
+    description: "High-impact vehicle handover and lifestyle content.",
   },
   {
-    id: "Event",
-    title: "Event",
-    description: "Live event photography for parties, launches, and corporate gatherings.",
+    id: "motorsport",
+    title: "Motorsport Shoot",
+    description: "Action-focused motorsport and speed brand visuals.",
   },
   {
-    id: "Product",
-    title: "Product",
-    description: "Clean product imagery for catalogs, ads, and online stores.",
+    id: "wedding",
+    title: "Wedding Shoot",
+    description: "Complete wedding coverage and cinematic storytelling.",
   },
   {
-    id: "Fashion",
-    title: "Fashion",
-    description: "Editorial fashion shoots with styling and creative direction.",
+    id: "model",
+    title: "Model Shoot",
+    description: "Editorial and portfolio photography for modeling talent.",
   },
   {
-    id: "Pre-wedding",
-    title: "Pre-wedding",
-    description: "Romantic pre-wedding sessions with cinematic storytelling.",
+    id: "restaurant",
+    title: "Restaurant Promo",
+    description: "Food, ambience, and hospitality brand imagery.",
   },
   {
-    id: "Car",
-    title: "Car",
-    description: "Automotive photography for cars, bikes, and lifestyle mobility shoots.",
+    id: "product",
+    title: "Product Shoot",
+    description: "High-quality product photography for ecommerce and catalogs.",
   },
   {
-    id: "Delivery",
-    title: "Delivery",
-    description: "On-location delivery and logistics imagery for commerce and brands.",
+    id: "nature",
+    title: "Nature & Travel",
+    description: "Outdoor, travel, and lifestyle photography in scenic settings.",
   },
   {
-    id: "Model",
-    title: "Model",
-    description: "Portfolio and agency model shoots with a professional look.",
+    id: "cinematic",
+    title: "Cinematic / Reels",
+    description: "Video-ready shoots for reels, ads, and cinematic content.",
   },
   {
-    id: "Casual",
-    title: "Casual",
-    description: "Relaxed lifestyle shoots for social media, branding, and content.",
-  },
-  {
-    id: "Other",
+    id: "other",
     title: "Other",
-    description: "Custom shoot style — describe your vision in the notes.",
+    description: "Custom creative shoots for unique content needs.",
   },
 ];
 
@@ -108,12 +104,15 @@ const OrderNew = () => {
   const [notes, setNotes] = useState("");
   const [couponCode, setCouponCode] = useState("");
   const [couponApplied, setCouponApplied] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
 
   const baseAmount = 100000; // ₹1000 in paise
   const amount = couponApplied ? 0 : baseAmount;
   const displayAmount = amount === 0 ? "FREE" : `₹${(amount / 100).toFixed(0)}`;
+  const razorpayUpiId = "snapstules@ptaxis";
+  const paymentMessage = "SnapStyles shoot booking payment";
 
   const isStepValid = useMemo(() => {
     if (step === 1) {
@@ -185,6 +184,8 @@ const OrderNew = () => {
         amountPaid: amount === 0 ? 0 : amount / 100,
         coupon: couponApplied ? "creators" : undefined,
         paymentId,
+        transactionId: paymentId,
+        paymentMessage,
       },
     });
   };
@@ -195,9 +196,14 @@ const OrderNew = () => {
       return;
     }
 
+    if (!consentChecked) {
+      toast({ title: "Please accept the Terms & Conditions and consent notice." });
+      return;
+    }
+
     const now = new Date();
     if (date < new Date(now.getFullYear(), now.getMonth(), now.getDate())) {
-      toast({ title: "Select a future date in IST." });
+      toast({ title: "Select a future date." });
       return;
     }
 
@@ -225,14 +231,25 @@ const OrderNew = () => {
       name: "SnapStyles",
       description: `${shootType} shoot booking`,
       prefill: {
-        name: "SnapStyles Client",
-        email: "client@example.com",
+        name: customerName || "SnapStyles Client",
+        email: `${instagramHandle.replace(/^@/, "")}@example.com`,
+        contact: contactNumber,
+        vpa: razorpayUpiId,
+      },
+      method: {
+        upi: true,
+        card: false,
+        netbanking: false,
+        wallet: false,
+        emi: false,
       },
       notes: {
         shootType,
         location,
         people: String(people),
         date: date.toISOString(),
+        payment_message: paymentMessage,
+        transaction_id: orderId,
       },
       theme: { color: "#ef4444" },
       handler: (response: any) => {
@@ -272,9 +289,9 @@ const OrderNew = () => {
               <span className="inline-flex items-center gap-2 rounded-full bg-red-500/10 px-3 py-1 text-sm font-semibold text-red-300">
                 <Sparkles className="w-4 h-4 text-red-400" /> Book a Shoot
               </span>
-              <h1 className="mt-6 text-4xl md:text-5xl font-display font-bold text-white">Schedule your shoot in IST.</h1>
+              <h1 className="mt-6 text-4xl md:text-5xl font-display font-bold text-white">Schedule your shoot.</h1>
               <p className="mt-4 text-slate-300 text-lg leading-relaxed">
-                Choose your preferred shoot type, location, and time in India Standard Time (Asia/Kolkata).
+                Choose your shoot type, location, date, and preferred time.
               </p>
             </motion.div>
           </ScrollReveal>
@@ -414,12 +431,9 @@ const OrderNew = () => {
                         className="space-y-6"
                       >
                         <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <Label>Choose a date</Label>
-                              <p className="text-sm text-slate-400">Only future IST dates are allowed.</p>
-                            </div>
-                            <span className="rounded-full bg-slate-900/80 px-3 py-1 text-xs uppercase tracking-[0.25em] text-slate-400">Asia/Kolkata</span>
+                          <div>
+                            <Label>Choose a date</Label>
+                            <p className="text-sm text-slate-400">Only future dates are allowed.</p>
                           </div>
                           <div className="rounded-3xl border border-slate-800 bg-slate-950 p-5">
                             <Calendar
@@ -439,7 +453,7 @@ const OrderNew = () => {
                             value={time}
                             onChange={(e) => setTime(e.target.value)}
                           />
-                          <p className="text-sm text-slate-400">Your time is saved and shown in India Standard Time (IST).</p>
+                          <p className="text-sm text-slate-400">Choose your preferred time for the shoot.</p>
                         </div>
                       </motion.div>
                     )}
@@ -466,7 +480,7 @@ const OrderNew = () => {
                             </div>
                             <div>
                               <p className="font-semibold text-white">Time</p>
-                              <p>{formatTime(time)} IST</p>
+                              <p>{formatTime(time)}</p>
                             </div>
                             <div>
                               <p className="font-semibold text-white">Location</p>
@@ -505,9 +519,45 @@ const OrderNew = () => {
                           <p className="mt-3 text-sm text-slate-400">
                             Use code <span className="font-semibold text-white">creators</span> for a free shoot.
                           </p>
+                          <p className="mt-3 text-sm text-slate-300">
+                            Pay via UPI using <span className="font-semibold text-white">{razorpayUpiId}</span>. The checkout will open Razorpay UPI payment.
+                          </p>
+                          <p className="mt-2 text-sm text-slate-300">
+                            Payment message: <span className="font-semibold text-white">{paymentMessage}</span>
+                          </p>
                           {couponApplied && (
                             <p className="mt-3 text-sm text-emerald-300">Coupon applied — your shoot is free.</p>
                           )}
+                        </div>
+                        <div className="rounded-3xl border border-slate-800 bg-slate-900 p-5 text-sm leading-7 text-slate-300">
+                          <h3 className="text-lg font-semibold text-white">Terms & Conditions & Personal Data Consent</h3>
+                          <p className="mt-3 text-slate-400">
+                            By submitting this booking form, I confirm that the information I provide is accurate and that I am voluntarily providing my personal details for the purpose of processing and managing my booking.
+                          </p>
+                          <div className="mt-4 space-y-3">
+                            <p className="text-slate-400">Personal Information & Consent</p>
+                            <ul className="list-disc space-y-2 pl-5 text-slate-300">
+                              <li>I consent to the collection and use of the information I provide for booking, scheduling, communication, and related services.</li>
+                              <li>I understand that I should <strong>not provide sensitive, confidential, financial, or unnecessary personal information</strong> through this form.</li>
+                              <li>I am responsible for ensuring that the information I submit does not contain confidential details belonging to another person or organization.</li>
+                              <li>My information will be handled only for purposes related to my booking and the services requested, subject to the company's applicable privacy practices.</li>
+                              <li>I understand that submitting this form constitutes my <strong>personal consent</strong> to the collection and processing of the information provided.</li>
+                            </ul>
+                            <p className="text-slate-400">User Responsibility</p>
+                            <p>
+                              I understand that I am responsible for the information I choose to submit. I should not use the booking form to share passwords, payment credentials, government identification numbers, confidential business information, or other highly sensitive information unless specifically required and securely requested by the company.
+                            </p>
+                          </div>
+                          <div className="mt-5 flex items-start gap-3">
+                            <Checkbox
+                              id="terms-consent"
+                              checked={consentChecked}
+                              onCheckedChange={(checked) => setConsentChecked(Boolean(checked))}
+                            />
+                            <label htmlFor="terms-consent" className="text-sm text-slate-200 leading-6">
+                              <span className="font-semibold text-white">I have read and agree to the Terms & Conditions and consent to the collection and processing of the information I have provided for my booking.</span>
+                            </label>
+                          </div>
                         </div>
                       </motion.div>
                     )}
@@ -539,7 +589,7 @@ const OrderNew = () => {
               <Card className="rounded-3xl border border-red-500/20 bg-slate-950/95 p-6 shadow-[0_35px_100px_-60px_rgba(248,113,113,0.65)]">
                 <CardHeader>
                   <CardTitle>Booking Details</CardTitle>
-                  <CardDescription>Everything is shown in IST.</CardDescription>
+                  <CardDescription>Review your shoot booking details.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2 text-sm text-slate-300">
@@ -558,7 +608,7 @@ const OrderNew = () => {
                   )}
                   <div className="space-y-2 text-sm text-slate-300">
                     <p className="font-semibold text-white">Schedule</p>
-                    <p>{formatDate(date)} • {formatTime(time)} IST</p>
+                    <p>{formatDate(date)} • {formatTime(time)}</p>
                   </div>
                   <div className="space-y-2 text-sm text-slate-300">
                     <p className="font-semibold text-white">Location</p>
@@ -568,13 +618,6 @@ const OrderNew = () => {
                     <p className="font-semibold text-white">Participants</p>
                     <p>{people}</p>
                   </div>
-                  <motion.div
-                    animate={{ boxShadow: selectedType ? "0 0 60px rgba(248,113,113,0.2)" : "0 0 0 rgba(0,0,0,0)" }}
-                    transition={{ duration: 0.4 }}
-                    className="rounded-3xl border border-red-500/10 bg-slate-900/90 p-4"
-                  >
-                    <p className="text-sm text-slate-300">All times are managed in India Standard Time (IST) · Asia/Kolkata.</p>
-                  </motion.div>
                 </CardContent>
               </Card>
 

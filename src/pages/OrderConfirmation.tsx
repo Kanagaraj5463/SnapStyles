@@ -26,6 +26,8 @@ const OrderConfirmation = () => {
     amountPaid?: number;
     coupon?: string;
     paymentId?: string;
+    transactionId?: string;
+    paymentMessage?: string;
   }) || null;
 
   const formattedDate = order?.date
@@ -37,6 +39,8 @@ const OrderConfirmation = () => {
   const userBio = profile?.bio || "Premium creator profile.";
   const appliedCoupon = order?.coupon ? order.coupon.toUpperCase() : "—";
   const paymentReference = order?.paymentId || "N/A";
+  const transactionReference = order?.transactionId || order?.paymentId || "N/A";
+  const paymentMessage = order?.paymentMessage || "SnapStyles shoot booking payment";
   const amountPaidText = order?.amountPaid === 0 ? "FREE" : order?.amountPaid ? `₹${order.amountPaid.toFixed(0)}` : "₹1000";
 
   const downloadConfirmationPdf = () => {
@@ -90,6 +94,8 @@ const OrderConfirmation = () => {
     doc.text(`Amount Paid: ${amountPaidText}`, rightColumnX, 255);
     doc.text(`Coupon: ${appliedCoupon}`, rightColumnX, 270);
     doc.text(`Payment ID: ${paymentReference}`, rightColumnX, 285);
+    doc.text(`Transaction ID: ${transactionReference}`, rightColumnX, 300);
+    doc.text(`Payment Message: ${paymentMessage}`, rightColumnX, 315);
 
     doc.setDrawColor(80, 80, 100);
     doc.setLineWidth(0.5);
@@ -179,6 +185,16 @@ const OrderConfirmation = () => {
                   <div className="rounded-3xl border border-red-500/10 bg-slate-950 p-4">
                     <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Payment ID</p>
                     <p className="mt-3 text-sm text-slate-300 break-all">{order?.paymentId || "N/A"}</p>
+                  </div>
+                </div>
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
+                  <div className="rounded-3xl border border-red-500/10 bg-slate-950 p-4">
+                    <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Transaction ID</p>
+                    <p className="mt-3 text-sm text-slate-300 break-all">{transactionReference}</p>
+                  </div>
+                  <div className="rounded-3xl border border-red-500/10 bg-slate-950 p-4">
+                    <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Payment Message</p>
+                    <p className="mt-3 text-sm text-slate-300">{paymentMessage}</p>
                   </div>
                 </div>
 

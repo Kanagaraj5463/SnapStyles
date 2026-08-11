@@ -100,7 +100,7 @@ const Header = () => {
             className="hidden md:flex items-center gap-8"
             aria-label="Main navigation"
           >
-            {["Home", "Services", "Snap Stream", "Orders", "Snap Levels", "Contact"].map(
+            {["Home", "Services", "Live Collab", "Snap Stream", "Orders", "Snap Levels", "Contact"].map(
               (item) => (
                 <Link
                   key={item}
@@ -214,7 +214,7 @@ const Header = () => {
             className="md:hidden py-4 border-t border-border bg-background/95 backdrop-blur-md"
           >
             <nav className="flex flex-col gap-2">
-              {['Home', 'Services', 'Snap Stream', 'Orders', 'Snap Levels', 'Contact'].map(
+              {['Home', 'Services', 'Live Collab', 'Snap Stream', 'Orders', 'Snap Levels', 'Contact'].map(
                 (item) => (
                   <Link
                     key={item}
