@@ -8,26 +8,6 @@ import { Plus, CalendarDays, Clock3, MapPin, Users, CheckCircle2, XCircle, Spark
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/animations/ScrollReveal";
 
-const sampleOrders = [
-  {
-    id: "SS-20260815-001",
-    shootType: "Portrait",
-    date: "2026-08-15",
-    time: "18:30",
-    location: "Bangalore",
-    people: 2,
-    status: "Upcoming",
-  },
-  {
-    id: "SS-20260710-004",
-    shootType: "Product",
-    date: "2026-07-10",
-    time: "14:00",
-    location: "Mumbai",
-    people: 1,
-    status: "Completed",
-  },
-];
 
 const statusStyles: Record<string, string> = {
   Upcoming: "bg-red-500/10 text-red-300",
@@ -46,12 +26,7 @@ const formatDate = (date: string) => {
 
 const Orders = () => {
   const navigate = useNavigate();
-  const [orders] = useState(sampleOrders);
-
-  const upcomingOrders = useMemo(
-    () => orders.filter((order) => order.status === "Upcoming" || order.status === "Confirmed"),
-    [orders],
-  );
+  const [orders] = useState([]);
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
@@ -96,9 +71,9 @@ const Orders = () => {
             <div>
               <p className="text-sm text-muted-foreground">{orders.length} order{orders.length !== 1 ? "s" : ""} found</p>
             </div>
-            <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
-              <Link to="/orders/new" className="inline-flex items-center gap-2">
-                <Plus className="w-4 h-4" /> Book a Shoot
+            <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90 text-lg px-8 py-4 rounded-3xl">
+              <Link to="/orders/new" className="inline-flex items-center gap-3">
+                <Plus className="w-5 h-5" /> Book Now
               </Link>
             </Button>
           </div>
@@ -114,59 +89,15 @@ const Orders = () => {
               </motion.div>
             </ScrollReveal>
           ) : (
-            <div className="grid gap-6">
-              {orders.map((order) => (
-                <ScrollReveal key={order.id}>
-                  <motion.article className="rounded-3xl border border-slate-800 bg-slate-950/95 p-6 shadow-[0_30px_90px_-50px_rgba(248,113,113,0.24)] transition"
-                    whileHover={{ y: -6, scale: 1.01 }} transition={{ duration: 0.3 }}>
-                    <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-                      <div>
-                        <p className="text-sm uppercase tracking-[0.25em] text-muted-foreground">Order ID {order.id}</p>
-                        <h2 className="mt-3 text-2xl font-semibold">{order.shootType} Shoot</h2>
-                        <p className="mt-2 text-sm text-muted-foreground">{formatDate(order.date)} • {order.time} IST</p>
-                      </div>
-                      <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[order.status] || "bg-slate-100 text-slate-700"}`}>
-                        {order.status}
-                      </span>
-                    </div>
-
-                    <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                      <div className="rounded-3xl bg-muted/70 p-4">
-                        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Location</p>
-                        <p className="mt-2 font-medium">{order.location}</p>
-                      </div>
-                      <div className="rounded-3xl bg-muted/70 p-4">
-                        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">People</p>
-                        <p className="mt-2 font-medium">{order.people}</p>
-                      </div>
-                      <div className="rounded-3xl bg-muted/70 p-4">
-                        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Date</p>
-                        <p className="mt-2 font-medium">{formatDate(order.date)}</p>
-                      </div>
-                      <div className="rounded-3xl bg-muted/70 p-4">
-                        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Time</p>
-                        <p className="mt-2 font-medium">{order.time} IST</p>
-                      </div>
-                    </div>
-
-                    <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="flex flex-wrap items-center gap-2 text-sm text-slate-300">
-                        <span className="inline-flex items-center gap-2 rounded-full bg-slate-900/80 px-3 py-2 text-slate-300"> <MapPin className="w-4 h-4 text-red-400" /> {order.location}</span>
-                        <span className="inline-flex items-center gap-2 rounded-full bg-slate-900/80 px-3 py-2 text-slate-300"> <Users className="w-4 h-4 text-red-400" /> {order.people} people</span>
-                      </div>
-                      <Button
-                        variant="outline"
-                        className="inline-flex items-center gap-2 border-red-500 text-red-200 hover:border-red-400 hover:text-white"
-                        onClick={() => navigate(`/orders/${order.id}`)}
-                      >
-                        <CalendarDays className="w-4 h-4" />
-                        View Details
-                      </Button>
-                    </div>
-                  </motion.article>
-                </ScrollReveal>
-              ))}
-            </div>
+            <ScrollReveal>
+              <motion.div className="rounded-3xl border border-red-500/10 bg-slate-950/90 p-12 text-center shadow-[0_30px_90px_-50px_rgba(248,113,113,0.35)]" whileHover={{ y: -4 }} transition={{ duration: 0.3 }}>
+                <h2 className="text-3xl font-semibold text-white">No shoots scheduled yet</h2>
+                <p className="mt-3 text-slate-400">Book your next shoot now and start planning your perfect content session.</p>
+                <Button asChild className="mt-6 bg-red-500 text-slate-950 hover:bg-red-400 text-lg px-8 py-4 rounded-3xl">
+                  <Link to="/orders/new">Book Now</Link>
+                </Button>
+              </motion.div>
+            </ScrollReveal>
           )}
         </div>
       </main>

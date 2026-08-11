@@ -17,6 +17,7 @@ import Services from "./pages/Services";
 import Dashboard from "./pages/Dashboard";
 import ForgotPassword from "./pages/ForgotPassword";
 import CreatorLevels from "./pages/CreatorLevels";
+import LiveCollab from "./pages/LiveCollab";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import Support from "./pages/Support";
@@ -48,6 +49,7 @@ const App = () => (
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/snap-stream" element={<SnapStream />} />
                 <Route path="/services" element={<Services />} />
+                <Route path="/live-collab" element={<LiveCollab />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
                 <Route path="/support" element={<Support />} />

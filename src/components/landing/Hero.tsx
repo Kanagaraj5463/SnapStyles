@@ -11,7 +11,7 @@ const Hero = () => {
 
   // Stats with animated counters
   const stats = [
-    { icon: Users, value: 3, suffix: "+", label: "Creators" },
+    { icon: Users, value: 100, suffix: "+", label: "Creators" },
     { icon: TrendingUp, value: 50, suffix: "k+", label: "Total Reach" },
     { icon: Globe, value: 3, suffix: "+", label: "City" },
     { icon: Headphones, value: 24, suffix: "/7", label: "Support" },
