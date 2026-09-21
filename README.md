@@ -104,6 +104,9 @@ same-origin Render web service:
 Render supplies `PORT` and `RENDER_EXTERNAL_URL` automatically. The server
 serves the built SPA, API, uploaded GridFS images, and Socket.IO endpoint from
 the same origin, so secure session cookies and WebSockets work in production.
+The production build explicitly installs development dependencies because Vite
+is required at build time even though the running service uses
+`NODE_ENV=production`.
 
 ## Can I connect a custom domain to my Lovable project?
 
