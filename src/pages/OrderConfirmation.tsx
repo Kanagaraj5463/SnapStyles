@@ -34,7 +34,7 @@ const OrderConfirmation = () => {
     ? new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "long", year: "numeric" }).format(new Date(order.date))
     : "";
 
-  const userName = profile?.display_name || user?.email?.split("@")[0] || "SnapStyles Client";
+  const userName = profile?.displayName || user?.email?.split("@")[0] || "SnapStyles Client";
   const userEmail = user?.email || "Not provided";
   const userBio = profile?.bio || "Premium creator profile.";
   const appliedCoupon = order?.coupon ? order.coupon.toUpperCase() : "—";
