@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# SnapStyles
 
 ## Project info
 
@@ -32,9 +32,33 @@ cd <YOUR_PROJECT_NAME>
 # Step 3: Install the necessary dependencies.
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Configure the API.
+cp .env.example .env
+# Set MONGODB_URI and a random JWT_SECRET of at least 32 characters.
+
+# Step 5: Start the web app and API with auto-reloading.
 npm run dev
 ```
+
+The web app runs at `http://localhost:8080` and the API runs at
+`http://localhost:3001`. MongoDB credentials are read only by the Node API and
+must never use a `VITE_` prefix, which would expose them to the browser bundle.
+Account credentials, profile/contact/address fields, Instagram usernames, and
+profile pictures are persisted in the configured MongoDB database. Images use
+MongoDB GridFS so they remain available when the API is redeployed; no local
+upload volume is required.
+
+SnapStream uses peer-to-peer WebRTC for HD live video and Socket.IO for
+signaling and chat. Configure `TURN_URL`, `TURN_USERNAME`, and
+`TURN_CREDENTIAL` in production so viewers behind restrictive firewalls can
+connect reliably. Only authenticated users can create or broadcast a stream;
+the generated viewer link is public.
+
+Creator music search uses the official YouTube Data API and embedded YouTube
+player. Enable YouTube Data API v3 in Google Cloud and configure the private
+server-side `YOUTUBE_API_KEY`. Music playback state is synchronized through the
+stream room; YouTube autoplay policies may require viewers to click
+**Enable sound** once.
 
 **Edit a file directly in GitHub**
 

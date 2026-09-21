@@ -47,11 +47,11 @@ const Signup = () => {
       return;
     }
 
-    if (formData.password.length < 6) {
+    if (formData.password.length < 8) {
       toast({
         variant: "destructive",
         title: "Password too short",
-        description: "Password must be at least 6 characters.",
+        description: "Password must be at least 8 characters.",
       });
       return;
     }
@@ -70,8 +70,7 @@ const Signup = () => {
       return;
     }
 
-    setSuccess(true);
-    setLoading(false);
+    navigate("/dashboard", { replace: true });
   };
 
   return (

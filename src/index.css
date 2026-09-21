@@ -8,6 +8,12 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
 
+@keyframes reaction-float {
+  0% { opacity: 0; transform: translateY(20px) scale(.7); }
+  15% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-320px) scale(1.25) rotate(8deg); }
+}
+
 @layer base {
   :root {
     /* Core brand colors - Deep teal-blue & vibrant cyan accent */

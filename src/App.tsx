@@ -26,6 +26,8 @@ import Orders from "./pages/Orders";
 import OrderNew from "./pages/OrderNew";
 import OrderDetail from "./pages/OrderDetail";
 import OrderConfirmation from "./pages/OrderConfirmation";
+import LiveStudio from "./pages/LiveStudio";
+import LiveViewer from "./pages/LiveViewer";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -48,6 +50,7 @@ const App = () => (
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/snap-stream" element={<SnapStream />} />
+                <Route path="/live/:username/:streamId" element={<LiveViewer />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/live-collab" element={<LiveCollab />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -68,6 +71,22 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/account"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/studio/live"
+                  element={
+                    <ProtectedRoute>
+                      <LiveStudio />
                     </ProtectedRoute>
                   }
                 />

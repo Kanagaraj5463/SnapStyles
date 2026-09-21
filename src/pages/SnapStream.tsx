@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import { motion } from "framer-motion";
 import { useAnimation } from "@/contexts/AnimationContext";
 import ScrollReveal from "@/components/animations/ScrollReveal";
+import { useAuth } from "@/contexts/AuthContext";
 
 const features = [
   {
@@ -33,6 +34,7 @@ const features = [
 
 const SnapStream = () => {
   const { animationsEnabled } = useAnimation();
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -98,7 +100,7 @@ const SnapStream = () => {
                     className="bg-accent hover:bg-accent/90 text-white px-8 py-6 text-lg rounded-xl"
                     asChild
                   >
-                    <Link to="/signup">
+                    <Link to={user ? "/studio/live" : "/login"} state={{ from: { pathname: "/studio/live" } }}>
                       Start Streaming
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </Link>

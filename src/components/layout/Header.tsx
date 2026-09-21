@@ -135,10 +135,10 @@ const Header = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                     <Avatar className="h-9 w-9">
-                      <AvatarImage src={profile?.avatar_url || undefined} />
+                      <AvatarImage src={profile?.avatarUrl || undefined} />
                       <AvatarFallback className="bg-accent text-accent-foreground text-sm">
-                        {profile?.display_name
-                          ? getInitials(profile.display_name)
+                        {profile?.displayName
+                          ? getInitials(profile.displayName)
                           : "SS"}
                       </AvatarFallback>
                     </Avatar>
@@ -147,7 +147,7 @@ const Header = () => {
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="px-2 py-1.5">
                     <p className="text-sm font-medium">
-                      {profile?.display_name || "Creator"}
+                      {profile?.displayName || "Creator"}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {user.email}
@@ -155,9 +155,9 @@ const Header = () => {
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link to="/dashboard" className="cursor-pointer">
+                    <Link to="/account" className="cursor-pointer">
                       <User className="w-4 h-4 mr-2" />
-                      Dashboard
+                      My Account
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -193,16 +193,33 @@ const Header = () => {
             )}
           </div>
 
-          {/* ================= MOBILE TOGGLE ================= */}
-          <button
-            className={`md:hidden p-2 rounded-lg transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-              scrolled ? "hover:bg-accent/10" : "text-white hover:bg-white/10"
-            }`}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+          {/* ================= MOBILE AUTH / TOGGLE ================= */}
+          <div className="flex items-center gap-2 md:hidden">
+            {!loading && !user && (
+              <Button
+                variant="outline"
+                size="sm"
+                className={`rounded-lg ${
+                  scrolled
+                    ? "border-border bg-background/80"
+                    : "border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                }`}
+                asChild
+              >
+                <Link to="/login">Sign In</Link>
+              </Button>
+            )}
+            <button
+              className={`p-2 rounded-lg transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                scrolled ? "hover:bg-accent/10" : "text-white hover:bg-white/10"
+              }`}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+              aria-expanded={isMenuOpen}
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
         </div>
 
         {/* ================= MOBILE MENU ================= */}
@@ -232,10 +249,10 @@ const Header = () => {
                   <>
                     <Button variant="outline" className="rounded-lg" asChild>
                       <Link
-                        to="/dashboard"
+                        to="/account"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        Dashboard
+                        My Account
                       </Link>
                     </Button>
                     <Button
