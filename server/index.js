@@ -5,6 +5,8 @@ import cookie from "cookie";
 import cors from "cors";
 import express from "express";
 import { createServer } from "node:http";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import jwt from "jsonwebtoken";
@@ -15,8 +17,14 @@ import { Server } from "socket.io";
 import crypto from "node:crypto";
 import { z } from "zod";
 
-const { MONGODB_URI, JWT_SECRET, CLIENT_ORIGIN = "http://localhost:8080", TURN_URL, TURN_USERNAME, TURN_CREDENTIAL, YOUTUBE_API_KEY } = process.env;
-const port = Number(process.env.API_PORT || 3001);
+const { MONGODB_URI, JWT_SECRET, CLIENT_ORIGIN, TURN_URL, TURN_USERNAME, TURN_CREDENTIAL, YOUTUBE_API_KEY } = process.env;
+const port = Number(process.env.PORT || process.env.API_PORT || 3001);
+const clientOrigins = (CLIENT_ORIGIN || process.env.RENDER_EXTERNAL_URL || "http://localhost:8080")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
+const webRoot = path.resolve(currentDirectory, "../dist");
 
 if (!MONGODB_URI) throw new Error("MONGODB_URI is required");
 if (!JWT_SECRET || JWT_SECRET.length < 32) {
@@ -78,11 +86,11 @@ const profileSchema = z.object({
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, { cors: { origin: CLIENT_ORIGIN, credentials: true } });
+const io = new Server(httpServer, { cors: { origin: clientOrigins, credentials: true } });
 const liveStreams = new Map();
 app.set("trust proxy", 1);
 app.use(helmet());
-app.use(cors({ origin: CLIENT_ORIGIN, credentials: true }));
+app.use(cors({ origin: clientOrigins, credentials: true }));
 app.use(express.json({ limit: "32kb" }));
 app.use(cookieParser());
 
@@ -150,7 +158,15 @@ const requireAuth = async (req, res, next) => {
   }
 };
 
-app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
+app.get("/api/health", async (_req, res) => {
+  try {
+    await mongoose.connection.db.admin().ping();
+    res.json({ status: "ok", database: "connected" });
+  } catch (error) {
+    console.error("Database health check failed:", error);
+    res.status(503).json({ status: "error", database: "disconnected" });
+  }
+});
 app.get("/api/stream-config", (_req, res) => {
   const iceServers = [
     { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
@@ -348,6 +364,14 @@ app.get("/api/account/avatar/:imageId", async (req, res, next) => {
   }
 });
 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(webRoot));
+  app.get("/{*splat}", (req, res, next) => {
+    if (req.path.startsWith("/api/") || req.path.startsWith("/socket.io/")) return next();
+    res.sendFile(path.join(webRoot, "index.html"));
+  });
+}
+
 app.use((error, _req, res, _next) => {
   if (error instanceof z.ZodError) {
     return res.status(400).json({ message: error.issues[0]?.message || "Invalid request" });
@@ -505,4 +529,14 @@ io.on("connection", (socket) => {
 });
 
 await mongoose.connect(MONGODB_URI);
-httpServer.listen(port, () => console.log(`SnapStyles API listening on http://localhost:${port}`));
+httpServer.listen(port, () => console.log(`SnapStyles server listening on port ${port}`));
+
+const shutdown = () => {
+  httpServer.close(async () => {
+    await mongoose.disconnect();
+    process.exit(0);
+  });
+};
+
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);

@@ -86,7 +86,24 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+SnapStyles requires a persistent Node process because authentication, MongoDB,
+GridFS, Socket.IO signaling, chat, and live-stream room state run in
+`server/index.js`. A static-only Vercel or Lovable deployment is not sufficient.
+
+The included `render.yaml` deploys the Vite frontend and Node API as one
+same-origin Render web service:
+
+1. Create a Render Blueprint from this repository.
+2. Set the private `MONGODB_URI` to the production Atlas connection string.
+3. Set `YOUTUBE_API_KEY` and TURN variables when those integrations are used.
+4. Keep the generated `JWT_SECRET`; changing it signs out existing users.
+5. Add the Render service's outbound IP ranges to Atlas Network Access, or use
+   Atlas private networking/static egress on a production plan.
+6. Verify `/api/health` returns `{"status":"ok","database":"connected"}`.
+
+Render supplies `PORT` and `RENDER_EXTERNAL_URL` automatically. The server
+serves the built SPA, API, uploaded GridFS images, and Socket.IO endpoint from
+the same origin, so secure session cookies and WebSockets work in production.
 
 ## Can I connect a custom domain to my Lovable project?
 
